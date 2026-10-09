@@ -1,0 +1,1016 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Short Link · Mergepdftool</title>
+<meta name="description" content="Short Link by Mergepdftool: short links on your own domain with click analytics, QR codes and an API. Self-hosted, no ads.">
+<link rel="icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white: #FFFFFF; --ice: #EFF6FF; --navy: #061638; --blue: #0057E8; --blue-hover: #0046BD; --cyan: #00A6F5; --red: #B42318;
+    --ink: #061638; --ink-2: #2A3B5C; --muted: #5B6B8C; --line: #D9E4F5; --line-soft: #E6EEFA;
+    --radius: 12px; --radius-sm: 8px;
+    --shadow: 0 1px 2px rgba(6, 22, 56, .05), 0 12px 32px -18px rgba(6, 22, 56, .28);
+    --font: "Manrope", "Noto Sans Thai", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { margin: 0; font-family: var(--font); font-size: 16px; line-height: 1.6; color: var(--ink); background: var(--white); }
+  html[lang="th"] body { line-height: 1.7; letter-spacing: 0; }
+  html[lang="th"] * { letter-spacing: 0 !important; text-transform: none !important; }
+  h1, h2, h3, h4 { margin: 0; color: var(--navy); line-height: 1.25; font-weight: 700; }
+  p { margin: 0; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { color: var(--blue-hover); text-decoration: underline; }
+  button { font: inherit; cursor: pointer; }
+  input, select, textarea { font: inherit; color: var(--ink); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+  .hidden { display: none !important; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* progress bar (cyan accent) */
+  #progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--cyan); z-index: 60; opacity: 0; transition: width .3s ease, opacity .2s; }
+  #progress.on { opacity: 1; width: 80%; }
+
+  /* header */
+  .top { position: sticky; top: 0; z-index: 40; background: rgba(255, 255, 255, .92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line-soft); }
+  .top-inner { display: flex; align-items: center; gap: 16px; height: 64px; }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--navy); font-weight: 800; font-size: 18px; letter-spacing: -.01em; }
+  .brand:hover { text-decoration: none; color: var(--navy); }
+  .brand svg { width: 30px; height: 30px; flex: none; }
+  .brand small { font-weight: 500; color: var(--muted); font-size: 13px; margin-left: 4px; }
+  .top nav { display: none; gap: 20px; margin-left: 8px; }
+  .top nav a { color: var(--ink-2); font-weight: 600; font-size: 14px; }
+  .top nav a:hover { color: var(--blue); text-decoration: none; }
+  .top-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  @media (min-width: 760px) { .top nav { display: flex; } .brand small { display: inline; } }
+  @media (max-width: 759px) { .brand small { display: none; } }
+
+  /* buttons: one Royal Blue button per screen; the rest are ghost */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid var(--line); background: var(--white); color: var(--navy); font-weight: 600; font-size: 15px; transition: background .15s, border-color .15s, color .15s; white-space: nowrap; }
+  .btn:hover { background: var(--ice); border-color: #C5D6F2; text-decoration: none; color: var(--navy); }
+  .btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid rgba(0, 87, 232, .35); outline-offset: 1px; }
+  .btn.primary { background: var(--blue); border-color: var(--blue); color: var(--white); }
+  .btn.primary:hover { background: var(--blue-hover); border-color: var(--blue-hover); color: var(--white); }
+  .btn.sm { min-height: 36px; padding: 0 12px; font-size: 14px; border-radius: 8px; }
+  .btn.icon { padding: 0 10px; }
+  .btn:disabled { opacity: .55; cursor: default; }
+  .btn svg { width: 16px; height: 16px; }
+  .link-btn { background: none; border: 0; padding: 0; color: var(--blue); font-weight: 600; }
+  .link-btn:hover { text-decoration: underline; }
+
+  /* forms */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+  .input { width: 100%; min-height: 46px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--white); transition: border-color .15s; }
+  .input:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 0 3px rgba(0, 87, 232, .15); }
+  .input.is-error { border-color: var(--red); }
+  textarea.input { min-height: 140px; resize: vertical; line-height: 1.5; }
+  select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%232A3B5C' stroke-width='2'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 640px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+  .form-error { color: var(--red); font-size: 14px; font-weight: 600; min-height: 20px; }
+  details.more { border-top: 1px solid var(--line-soft); padding-top: 12px; }
+  details.more summary { cursor: pointer; font-weight: 600; color: var(--blue); list-style: none; display: inline-flex; align-items: center; gap: 6px; }
+  details.more summary::-webkit-details-marker { display: none; }
+  details.more summary::before { content: ""; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform .15s; }
+  details.more[open] summary::before { transform: rotate(45deg); }
+  details.more .grid-2 { margin-top: 14px; }
+  .help { font-size: 13px; color: var(--muted); }
+
+  /* hero */
+  .hero { padding: 40px 0 24px; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
+  .hero h1 { font-size: 30px; letter-spacing: -.02em; max-width: 680px; }
+  .hero .lede { color: var(--muted); font-size: 17px; max-width: 620px; margin-top: 12px; }
+  @media (min-width: 760px) { .hero { padding: 56px 0 32px; } .hero h1 { font-size: 40px; } }
+  .card { background: var(--white); border: 1px solid var(--line-soft); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; }
+  @media (min-width: 640px) { .card { padding: 24px; } }
+  .shorten-card { margin-top: 24px; display: grid; gap: 14px; }
+  .submit-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .submit-row .btn.primary { min-width: 160px; }
+  .result { margin-top: 16px; background: var(--ice); border-radius: var(--radius); padding: 18px 20px; display: grid; gap: 12px; }
+  .result .label { font-size: 13px; font-weight: 700; color: var(--ink-2); text-transform: uppercase; letter-spacing: .05em; }
+  .result .short { font-size: 22px; font-weight: 800; color: var(--navy); word-break: break-all; }
+  .result .dest { font-size: 14px; color: var(--muted); word-break: break-all; }
+  .result .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* sections */
+  section.block { padding: 32px 0; }
+  section.block.ice { background: var(--ice); }
+  .section-head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .section-head h2 { font-size: 22px; margin-right: auto; }
+  .notice { background: var(--ice); border-radius: var(--radius); padding: 20px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin: 8px 0 24px; }
+  .notice .ico { width: 44px; height: 44px; border-radius: 10px; background: var(--white); display: grid; place-items: center; flex: none; }
+  .notice .ico svg { width: 22px; height: 22px; }
+  .notice h3 { font-size: 16px; }
+  .notice p { color: var(--muted); font-size: 14px; }
+  .notice .text { flex: 1 1 240px; }
+  .notice.warn { border: 1px solid var(--red); background: var(--white); }
+
+  /* stat tiles (Ice tile + blue icon) */
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (min-width: 760px) { .tiles { grid-template-columns: repeat(4, 1fr); } }
+  .tile { background: var(--white); border-radius: var(--radius); padding: 16px; border: 1px solid var(--line-soft); display: grid; gap: 6px; }
+  .tile .ico { width: 36px; height: 36px; border-radius: 9px; background: var(--ice); display: grid; place-items: center; }
+  .tile .ico svg { width: 18px; height: 18px; }
+  .tile .value { font-size: 26px; font-weight: 800; color: var(--navy); line-height: 1.1; }
+  .tile .label { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .range { display: flex; gap: 6px; background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
+  .range button { border: 0; background: transparent; border-radius: 7px; padding: 6px 12px; font-weight: 600; font-size: 14px; color: var(--ink-2); min-height: 34px; }
+  .range button.on { background: var(--navy); color: var(--white); }
+  .panel { background: var(--white); border-radius: var(--radius); border: 1px solid var(--line-soft); padding: 18px; margin-top: 12px; }
+  .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+  .panel-head h3 { font-size: 16px; }
+  .two-col { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 12px; }
+  @media (min-width: 900px) { .two-col { grid-template-columns: 2fr 1fr; } }
+
+  /* chart */
+  .chart { position: relative; width: 100%; }
+  .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .chart .grid { stroke: var(--line-soft); stroke-width: 1; }
+  .chart .tick { font-size: 11px; fill: var(--muted); font-family: var(--font); font-variant-numeric: tabular-nums; }
+  .chart .bar { fill: var(--blue); transition: opacity .12s; }
+  .chart .bar.hover { opacity: .72; }
+  .chart .hit { fill: transparent; cursor: pointer; }
+  .chart .hit:focus { outline: none; }
+  .chart .hit:focus + .bar, .chart .hit:focus-visible { opacity: .72; }
+  .chart-tip { position: absolute; pointer-events: none; background: var(--navy); color: var(--white); padding: 8px 10px; border-radius: 8px; font-size: 13px; line-height: 1.4; transform: translate(-50%, -100%); white-space: nowrap; opacity: 0; transition: opacity .1s; z-index: 5; }
+  .chart-tip.on { opacity: 1; }
+  .chart-tip strong { font-size: 15px; display: block; }
+  .chart-tip span { color: #BFD3F7; }
+  table.data { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.data th, table.data td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  table.data th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 700; }
+  table.data td.num, table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .table-scroll { overflow-x: auto; }
+
+  /* breakdown lists */
+  .breakdowns { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 12px; }
+  @media (min-width: 640px) { .breakdowns { grid-template-columns: 1fr 1fr; } }
+  .breakdown h4 { font-size: 14px; margin-bottom: 8px; }
+  .brow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; padding: 5px 0; font-size: 14px; }
+  .brow .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .brow .count { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--navy); }
+  .brow .track { grid-column: 1 / -1; height: 6px; background: var(--ice); border-radius: 3px; overflow: hidden; }
+  .brow .fill { height: 100%; background: var(--blue); border-radius: 3px; }
+  .empty { color: var(--muted); font-size: 14px; padding: 12px 0; }
+
+  /* links list */
+  .toolbar { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 14px; }
+  @media (min-width: 760px) { .toolbar { grid-template-columns: 2fr 1fr 1fr auto auto; align-items: center; } }
+  .toolbar .input { min-height: 44px; }
+  .list { display: grid; gap: 10px; }
+  .link-row { background: var(--white); border: 1px solid var(--line-soft); border-radius: var(--radius); padding: 16px; display: grid; gap: 12px; }
+  @media (min-width: 760px) { .link-row { grid-template-columns: minmax(0, 1fr) auto; align-items: start; } }
+  .link-row.is-off { opacity: .7; }
+  .link-main { min-width: 0; display: grid; gap: 4px; }
+  .link-title { font-weight: 700; color: var(--navy); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .link-short { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .link-short a { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .link-dest { font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .link-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 4px; }
+  .pill { display: inline-flex; align-items: center; background: var(--ice); color: var(--navy); border-radius: 999px; padding: 2px 10px; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .pill.warn { background: var(--white); border: 1px solid var(--red); color: var(--red); }
+  .chip { border: 1px solid var(--line); background: var(--white); border-radius: 999px; padding: 1px 10px; font-size: 12px; color: var(--ink-2); }
+  .chip:hover { border-color: var(--blue); color: var(--blue); }
+  .meta { font-size: 13px; color: var(--muted); }
+  .link-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+  .copy-btn { border: 0; background: transparent; padding: 4px; border-radius: 6px; color: var(--blue); display: inline-grid; place-items: center; flex: none; }
+  .copy-btn:hover { background: var(--ice); }
+  .copy-btn svg { width: 16px; height: 16px; }
+  .list-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
+
+  /* API band (navy) */
+  .band { background: var(--navy); color: var(--white); padding: 40px 0; }
+  .band h2 { color: var(--white); font-size: 22px; }
+  .band p { color: #BFD3F7; }
+  .band .cols { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 20px; }
+  @media (min-width: 900px) { .band .cols { grid-template-columns: 1fr 1fr; } }
+  .band .kv { display: grid; gap: 8px; font-size: 14px; }
+  .band .kv div { display: flex; gap: 10px; flex-wrap: wrap; }
+  .band .kv b { color: #BFD3F7; font-weight: 600; min-width: 110px; }
+  .band code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; color: var(--white); }
+  .band pre { margin: 0; background: #0B2452; border-radius: 10px; padding: 14px 16px; overflow-x: auto; font-size: 13px; line-height: 1.55; color: #E6EEFA; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .band .cols > * { min-width: 0; }
+  .band table { width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed; }
+  .band td { padding: 8px 6px 8px 0; border-bottom: 1px solid rgba(255, 255, 255, .12); vertical-align: top; color: #E6EEFA; overflow-wrap: anywhere; }
+  .band td:first-child { width: 42%; }
+  .band td code { white-space: normal; }
+  .band .ok { display: inline-flex; align-items: center; gap: 6px; }
+  .band .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--white); display: inline-block; }
+  .band .dot.off { background: #7A8BB0; }
+
+  footer { padding: 28px 0 40px; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; }
+
+  /* modals */
+  .modal { position: fixed; inset: 0; background: rgba(6, 22, 56, .5); display: none; align-items: flex-end; justify-content: center; z-index: 50; padding: 0; }
+  .modal.open { display: flex; }
+  .modal-card { background: var(--white); width: 100%; max-width: 560px; max-height: 92vh; overflow: auto; border-radius: 16px 16px 0 0; padding: 20px; position: relative; }
+  .modal-card.wide { max-width: 760px; }
+  @media (min-width: 640px) { .modal { align-items: center; padding: 16px; } .modal-card { border-radius: 16px; padding: 24px; } }
+  .modal-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+  .modal-head h2 { font-size: 20px; flex: 1; }
+  .modal-close { border: 0; background: var(--ice); width: 36px; height: 36px; border-radius: 50%; color: var(--navy); font-size: 20px; line-height: 1; display: grid; place-items: center; flex: none; }
+  .modal-body { display: grid; gap: 14px; }
+  .modal-body > *, .two-col > *, .tiles > *, .breakdowns > * { min-width: 0; }
+  .modal-foot { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+  body.modal-open { overflow: hidden; }
+  .check { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; }
+  .check input { width: 18px; height: 18px; accent-color: var(--blue); }
+  .qr-wrap { display: grid; justify-items: center; gap: 12px; }
+  .qr-wrap canvas { border: 1px solid var(--line-soft); border-radius: 12px; }
+  .qr-wrap .url { font-weight: 600; word-break: break-all; text-align: center; }
+  .qr-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+  .stats-head .short { font-size: 18px; font-weight: 800; word-break: break-all; }
+  .stats-head .dest { font-size: 13px; color: var(--muted); word-break: break-all; }
+
+  /* toast */
+  #toast { position: fixed; left: 50%; top: 76px; transform: translateX(-50%) translateY(-12px); background: var(--navy); color: var(--white); padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; opacity: 0; transition: opacity .15s, transform .15s; z-index: 70; max-width: calc(100% - 32px); text-align: center; }
+  #toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+  #toast.err { background: var(--red); }
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="brand" href="/" aria-label="Mergepdftool Short Link">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 20h36a8 8 0 010 16H18a8 8 0 000 16h10" fill="none" stroke="#061638" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M38 52h10m0 0l-5-5m5 5l-5 5" fill="none" stroke="#00A6F5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Mergepdftool</span><small>Short Link</small>
+    </a>
+    <nav>
+      <a href="#links" data-i18n="nav.links">Links</a>
+      <a href="#analytics" data-i18n="nav.analytics">Analytics</a>
+      <a href="#api" data-i18n="nav.api">API</a>
+    </nav>
+    <div class="top-actions">
+      <button class="btn sm" id="lang-btn" type="button" aria-label="Switch language">ไทย</button>
+      <button class="btn sm" id="auth-btn" type="button" data-i18n="auth.login">Log in</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero wrap" id="shorten">
+    <div class="eyebrow"><span data-i18n="hero.eyebrow">URL Shortener</span></div>
+    <h1 data-i18n="hero.title">Short links on your own domain, with real click numbers.</h1>
+    <p class="lede" data-i18n="hero.sub">Create branded short links, track every click and download a QR code. Runs on your own server. No ads.</p>
+
+    <form class="card shorten-card" id="shorten-form" novalidate>
+      <div class="field">
+        <label for="f-url" data-i18n="form.url">Long URL</label>
+        <input class="input" id="f-url" name="url" type="url" inputmode="url" autocomplete="off" placeholder="https://example.com/your/long/page" required>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="f-domain" data-i18n="form.domain">Domain</label>
+          <select class="input" id="f-domain" name="domain"></select>
+        </div>
+        <div class="field">
+          <label for="f-slug" data-i18n="form.alias">Custom alias (optional)</label>
+          <input class="input" id="f-slug" name="slug" type="text" autocomplete="off" maxlength="64" placeholder="promo-oct" pattern="[A-Za-z0-9_-]*">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="f-title" data-i18n="form.title">Title (optional)</label>
+          <input class="input" id="f-title" name="title" type="text" maxlength="120" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f-tags" data-i18n="form.tags">Tags, comma separated</label>
+          <input class="input" id="f-tags" name="tags" type="text" autocomplete="off" placeholder="facebook, october">
+        </div>
+      </div>
+      <details class="more">
+        <summary data-i18n="form.more">UTM &amp; expiry</summary>
+        <div class="grid-2">
+          <div class="field"><label for="f-utm-source">utm_source</label><input class="input" id="f-utm-source" type="text" placeholder="facebook" autocomplete="off"></div>
+          <div class="field"><label for="f-utm-medium">utm_medium</label><input class="input" id="f-utm-medium" type="text" placeholder="social" autocomplete="off"></div>
+          <div class="field"><label for="f-utm-campaign">utm_campaign</label><input class="input" id="f-utm-campaign" type="text" placeholder="october-promo" autocomplete="off"></div>
+          <div class="field"><label for="f-utm-content">utm_content</label><input class="input" id="f-utm-content" type="text" placeholder="post-1" autocomplete="off"></div>
+          <div class="field"><label for="f-expires" data-i18n="form.expiry">Expires at (optional)</label><input class="input" id="f-expires" type="datetime-local"></div>
+        </div>
+        <p class="help" id="utm-preview"></p>
+      </details>
+      <div class="form-error" id="form-error" role="alert"></div>
+      <div class="submit-row">
+        <button class="btn primary" type="submit" id="shorten-btn" data-i18n="form.submit">Shorten</button>
+        <span class="help" id="public-note"></span>
+      </div>
+      <div class="result hidden" id="result"></div>
+    </form>
+  </section>
+
+  <div class="wrap">
+    <div class="notice warn hidden" id="setup-notice">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#B42318" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4m0 4h.01M10.3 3.9L2.6 17a2 2 0 001.7 3h15.4a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></div>
+      <div class="text"><h3 data-i18n="setup.title">Set ADMIN_PASSWORD to start</h3><p data-i18n="setup.text">The server is running, but the dashboard stays off until you set an admin password in the environment.</p></div>
+    </div>
+    <div class="notice hidden" id="locked">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#0057E8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></div>
+      <div class="text"><h3 data-i18n="locked.title">Log in to manage links</h3><p data-i18n="locked.text">Your links, click analytics and QR codes are behind the admin password.</p></div>
+      <button class="btn" type="button" id="locked-login" data-i18n="auth.login">Log in</button>
+    </div>
+  </div>
+
+  <section class="block ice hidden" id="analytics">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="analytics.title">Analytics</h2>
+        <div class="range" id="range" role="group" aria-label="Date range">
+          <button type="button" data-days="7" data-i18n="range.7">7 days</button>
+          <button type="button" data-days="30" class="on" data-i18n="range.30">30 days</button>
+          <button type="button" data-days="90" data-i18n="range.90">90 days</button>
+        </div>
+      </div>
+      <div class="tiles" id="tiles"></div>
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-head"><h3 data-i18n="chart.title">Clicks per day</h3><button class="btn sm" type="button" id="chart-toggle" data-i18n="chart.table">Table</button></div>
+          <div class="chart" id="overview-chart"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3 data-i18n="top.title">Top links</h3></div>
+          <div id="top-links"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block hidden" id="links">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="links.title">Links</h2>
+        <span class="meta" id="links-count"></span>
+      </div>
+      <div class="toolbar">
+        <input class="input" id="search" type="search" data-i18n-ph="links.search" placeholder="Search links" autocomplete="off">
+        <select class="input" id="tag-filter"></select>
+        <select class="input" id="sort">
+          <option value="created" data-i18n="links.sort.created">Newest first</option>
+          <option value="clicks" data-i18n="links.sort.clicks">Most clicks</option>
+        </select>
+        <button class="btn" type="button" id="bulk-btn" data-i18n="links.bulk">Bulk add</button>
+        <a class="btn" href="/api/export/links.csv" download data-i18n="links.export">Export CSV</a>
+      </div>
+      <div class="list" id="list"></div>
+      <div class="list-foot">
+        <span class="meta" id="list-note"></span>
+        <button class="btn hidden" type="button" id="load-more" data-i18n="links.more">Load more</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="api">
+    <div class="wrap">
+      <h2 data-i18n="api.title">API</h2>
+      <p data-i18n="api.text">Create and manage links from your own scripts, Make, Zapier or n8n. Send the API key as a Bearer token.</p>
+      <div class="cols">
+        <div>
+          <div class="kv">
+            <div><b data-i18n="api.base">Base URL</b><code id="api-base"></code></div>
+            <div><b>API key</b><span class="ok"><span class="dot" id="api-dot"></span><span id="api-key-state"></span></span></div>
+          </div>
+          <table style="margin-top:16px">
+            <tr><td><code>POST /api/links</code></td><td><code>{ url, slug?, title?, tags?, domain?, expiresAt? }</code></td></tr>
+            <tr><td><code>POST /api/links/bulk</code></td><td><code>{ items: [{ url, slug?, title? }] }</code> (max 100)</td></tr>
+            <tr><td><code>GET /api/links</code></td><td><code>?q=&amp;tag=&amp;sort=clicks&amp;limit=&amp;offset=</code></td></tr>
+            <tr><td><code>GET /api/links/:id</code></td><td>Link by id or slug</td></tr>
+            <tr><td><code>PATCH /api/links/:id</code></td><td><code>{ url?, slug?, title?, tags?, active?, expiresAt? }</code></td></tr>
+            <tr><td><code>DELETE /api/links/:id</code></td><td>Remove the link and its clicks</td></tr>
+            <tr><td><code>GET /api/links/:id/stats</code></td><td><code>?days=7|30|90</code> timeline, devices, browsers, referrers, countries</td></tr>
+            <tr><td><code>GET /api/stats/overview</code></td><td>Totals across all links</td></tr>
+            <tr><td><code>GET /api/export/links.csv</code></td><td>CSV of all links</td></tr>
+          </table>
+        </div>
+        <pre id="api-example"></pre>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span id="footer-by"></span>
+    <span data-i18n="footer.privacy">Click data stays on this server.</span>
+  </div>
+</footer>
+
+<!-- Login -->
+<div class="modal" id="login-modal" aria-hidden="true" role="dialog" aria-labelledby="login-title">
+  <form class="modal-card" id="login-form">
+    <div class="modal-head"><h2 id="login-title" data-i18n="login.title">Admin login</h2><button class="modal-close" type="button" aria-label="Close">&times;</button></div>
+    <div class="modal-body">
+      <div class="field"><label for="login-password" data-i18n="login.password">Password</label><input class="input" id="login-password" type="password" autocomplete="current-password" required></div>
+      <div class="form-error" id="login-error" role="alert"></div>
+    </div>
+    <div class="modal-foot"><button class="btn primary" type="submit" data-i18n="auth.login">Log in</button></div>
+  </form>
+</div>
+
+<!-- QR -->
+<div class="modal" id="qr-modal" aria-hidden="true" role="dialog" aria-labelledby="qr-title">
+  <div class="modal-card">
+    <div class="modal-head"><h2 id="qr-title" data-i18n="qr.title">QR code</h2><button class="modal-close" type="button" aria-label="Close">&times;</button></div>
+    <div class="modal-body qr-wrap">
+      <canvas id="qr-canvas" width="220" height="220" aria-label="QR code"></canvas>
+      <div class="url" id="qr-url"></div>
+      <div class="qr-opts">
+        <div class="field"><label for="qr-size" data-i18n="qr.size">Size</label><select class="input" id="qr-size"><option value="512">512 px</option><option value="1024" selected>1024 px</option><option value="2048">2048 px</option></select></div>
+        <div class="field"><label for="qr-color" data-i18n="qr.color">Colour</label><select class="input" id="qr-color"><option value="#061638">Navy</option><option value="#0057E8">Royal Blue</option><option value="#000000">Black</option></select></div>
+      </div>
+      <p class="help" data-i18n="qr.note">Dynamic QR: you can change the destination later and the printed QR keeps working.</p>
+    </div>
+    <div class="modal-foot"><button class="btn" type="button" id="qr-svg" data-i18n="qr.svg">Download SVG</button><button class="btn primary" type="button" id="qr-png" data-i18n="qr.png">Download PNG</button></div>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="modal" id="stats-modal" aria-hidden="true" role="dialog" aria-labelledby="stats-title">
+  <div class="modal-card wide">
+    <div class="modal-head"><h2 id="stats-title" data-i18n="stats.title">Link stats</h2><button class="modal-close" type="button" aria-label="Close">&times;</button></div>
+    <div class="modal-body" id="stats-body"></div>
+  </div>
+</div>
+
+<!-- Edit -->
+<div class="modal" id="edit-modal" aria-hidden="true" role="dialog" aria-labelledby="edit-title">
+  <form class="modal-card" id="edit-form">
+    <div class="modal-head"><h2 id="edit-title" data-i18n="edit.title">Edit link</h2><button class="modal-close" type="button" aria-label="Close">&times;</button></div>
+    <div class="modal-body">
+      <div class="field"><label for="e-url" data-i18n="form.url">Long URL</label><input class="input" id="e-url" type="url" required></div>
+      <div class="grid-2">
+        <div class="field"><label for="e-slug" data-i18n="form.alias">Custom alias</label><input class="input" id="e-slug" type="text" maxlength="64" pattern="[A-Za-z0-9_-]*"></div>
+        <div class="field"><label for="e-title" data-i18n="form.title">Title</label><input class="input" id="e-title" type="text" maxlength="120"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label for="e-tags" data-i18n="form.tags">Tags</label><input class="input" id="e-tags" type="text"></div>
+        <div class="field"><label for="e-expires" data-i18n="form.expiry">Expires at</label><input class="input" id="e-expires" type="datetime-local"></div>
+      </div>
+      <label class="check"><input type="checkbox" id="e-active"><span data-i18n="edit.active">Link is active</span></label>
+      <div class="form-error" id="edit-error" role="alert"></div>
+    </div>
+    <div class="modal-foot"><button class="btn" type="button" id="edit-cancel" data-i18n="common.cancel">Cancel</button><button class="btn primary" type="submit" data-i18n="edit.save">Save changes</button></div>
+  </form>
+</div>
+
+<!-- Bulk -->
+<div class="modal" id="bulk-modal" aria-hidden="true" role="dialog" aria-labelledby="bulk-title">
+  <form class="modal-card" id="bulk-form">
+    <div class="modal-head"><h2 id="bulk-title" data-i18n="bulk.title">Bulk add links</h2><button class="modal-close" type="button" aria-label="Close">&times;</button></div>
+    <div class="modal-body">
+      <p class="help" data-i18n="bulk.help">One link per line. Optional: add an alias and a title after a comma.</p>
+      <textarea class="input" id="bulk-text" placeholder="https://example.com/page-1, promo1, October promo&#10;https://example.com/page-2"></textarea>
+      <div class="form-error" id="bulk-error" role="alert"></div>
+      <div id="bulk-result"></div>
+    </div>
+    <div class="modal-foot"><button class="btn primary" type="submit" data-i18n="bulk.submit">Create links</button></div>
+  </form>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="/qr.js"></script>
+<script>
+(() => {
+  'use strict';
+  const BRAND = { name: 'Mergepdftool', tool: 'Short Link', labs: 'RankPath Labs', labsUrl: '' };
+
+  const I18N = {
+    en: {
+      'nav.links': 'Links', 'nav.analytics': 'Analytics', 'nav.api': 'API', 'auth.login': 'Log in', 'auth.logout': 'Log out',
+      'hero.eyebrow': 'Short Link', 'hero.title': 'Short links on your own domain, with real click numbers.',
+      'hero.sub': 'Create branded short links, track every click and download a QR code. Runs on your own server. No ads.',
+      'form.url': 'Long URL', 'form.domain': 'Domain', 'form.alias': 'Custom alias (optional)', 'form.title': 'Title (optional)', 'form.tags': 'Tags, comma separated',
+      'form.more': 'UTM & expiry', 'form.expiry': 'Expires at (optional)', 'form.submit': 'Shorten', 'form.submitting': 'Creating…', 'form.public': 'Anyone can shorten here. Log in to see stats.',
+      'error.url': 'Please enter a URL.', 'error.generic': 'Something went wrong. Please try again.',
+      'result.title': 'Your short link', 'btn.copy': 'Copy', 'btn.copied': 'Copied', 'btn.qr': 'QR code', 'btn.stats': 'Stats', 'btn.open': 'Open', 'btn.edit': 'Edit', 'btn.delete': 'Delete', 'btn.another': 'Shorten another',
+      'locked.title': 'Log in to manage links', 'locked.text': 'Your links, click analytics and QR codes are behind the admin password.',
+      'setup.title': 'Set ADMIN_PASSWORD to start', 'setup.text': 'The server is running, but the dashboard stays off until you set an admin password in the environment.',
+      'analytics.title': 'Analytics', 'range.7': '7 days', 'range.30': '30 days', 'range.90': '90 days',
+      'tile.links': 'Links', 'tile.clicks': 'Clicks, all time', 'tile.today': 'Clicks today', 'tile.visitors': 'Visitors, {days} days',
+      'chart.title': 'Clicks per day', 'chart.table': 'Table', 'chart.chart': 'Chart', 'top.title': 'Top links', 'top.empty': 'No clicks in this period yet.',
+      'links.title': 'Links', 'links.search': 'Search links', 'links.alltags': 'All tags', 'links.sort.created': 'Newest first', 'links.sort.clicks': 'Most clicks',
+      'links.bulk': 'Bulk add', 'links.export': 'Export CSV', 'links.empty': 'No links yet. Shorten your first link above.', 'links.more': 'Load more', 'links.count': '{n} links', 'links.showing': 'Showing {shown} of {total}',
+      'link.clicks': '{n} clicks', 'status.disabled': 'Disabled', 'status.expired': 'Expired',
+      'api.title': 'API', 'api.text': 'Create and manage links from your own scripts, Make, Zapier or n8n. Send the API key as a Bearer token.', 'api.base': 'Base URL',
+      'api.key.on': 'configured', 'api.key.off': 'not set (API_KEY)',
+      'login.title': 'Admin login', 'login.password': 'Password',
+      'qr.title': 'QR code', 'qr.size': 'Size', 'qr.color': 'Colour', 'qr.png': 'Download PNG', 'qr.svg': 'Download SVG',
+      'qr.note': 'Dynamic QR: you can change the destination later and the printed QR keeps working.',
+      'stats.title': 'Link stats', 'stats.window': 'Clicks, {days} days', 'stats.visitors': 'Visitors', 'stats.today': 'Today', 'stats.all': 'All time', 'stats.bots': 'Bot hits (not counted)',
+      'stats.devices': 'Devices', 'stats.browsers': 'Browsers', 'stats.os': 'Operating systems', 'stats.referrers': 'Referrers', 'stats.countries': 'Countries',
+      'stats.recent': 'Recent clicks', 'stats.csv': 'Download clicks CSV', 'stats.empty': 'No data yet',
+      'col.time': 'Time', 'col.country': 'Country', 'col.device': 'Device', 'col.browser': 'Browser', 'col.referrer': 'Referrer', 'col.date': 'Date', 'col.clicks': 'Clicks', 'col.visitors': 'Visitors',
+      'edit.title': 'Edit link', 'edit.active': 'Link is active', 'edit.save': 'Save changes',
+      'bulk.title': 'Bulk add links', 'bulk.help': 'One link per line. Optional: add an alias and a title after a comma.', 'bulk.submit': 'Create links', 'bulk.result': 'Created {ok}, failed {bad}', 'bulk.empty': 'Paste at least one URL.',
+      'confirm.delete': 'Delete this link? The short URL will stop working.',
+      'toast.created': 'Short link created', 'toast.saved': 'Saved', 'toast.deleted': 'Link deleted', 'toast.loggedout': 'Logged out', 'toast.copyfail': 'Could not copy. Select the link and copy it manually.',
+      'footer.by': 'A {labs} tool', 'footer.privacy': 'Click data stays on this server.', 'common.cancel': 'Cancel',
+      'device.desktop': 'Desktop', 'device.mobile': 'Mobile', 'device.tablet': 'Tablet', 'device.unknown': 'Unknown', 'device.bot': 'Bot', 'ref.direct': 'Direct', 'ref.other': 'Other', 'country.XX': 'Unknown',
+      'time.now': 'just now', 'time.min': '{n} min ago', 'time.hour': '{n} h ago'
+    },
+    th: {
+      'nav.links': 'ลิงก์', 'nav.analytics': 'สถิติ', 'nav.api': 'API', 'auth.login': 'เข้าสู่ระบบ', 'auth.logout': 'ออกจากระบบ',
+      'hero.eyebrow': 'Short Link · ย่อลิงก์', 'hero.title': 'ย่อลิงก์บนโดเมนของคุณเอง พร้อมตัวเลขคลิกจริง',
+      'hero.sub': 'สร้างลิงก์สั้นในชื่อแบรนด์ของคุณ ดูทุกคลิก และดาวน์โหลด QR code ทำงานบนเซิร์ฟเวอร์ของคุณเอง ไม่มีโฆษณา',
+      'form.url': 'ลิงก์ยาว', 'form.domain': 'โดเมน', 'form.alias': 'ชื่อลิงก์ที่ต้องการ (ไม่บังคับ)', 'form.title': 'ชื่อเรียก (ไม่บังคับ)', 'form.tags': 'แท็ก คั่นด้วยจุลภาค',
+      'form.more': 'UTM และวันหมดอายุ', 'form.expiry': 'หมดอายุเมื่อ (ไม่บังคับ)', 'form.submit': 'ย่อลิงก์', 'form.submitting': 'กำลังสร้าง…', 'form.public': 'ทุกคนย่อลิงก์ได้ เข้าสู่ระบบเพื่อดูสถิติ',
+      'error.url': 'กรุณาใส่ลิงก์', 'error.generic': 'เกิดข้อผิดพลาด กรุณาลองใหม่',
+      'result.title': 'ลิงก์สั้นของคุณ', 'btn.copy': 'คัดลอก', 'btn.copied': 'คัดลอกแล้ว', 'btn.qr': 'QR code', 'btn.stats': 'สถิติ', 'btn.open': 'เปิด', 'btn.edit': 'แก้ไข', 'btn.delete': 'ลบ', 'btn.another': 'ย่อลิงก์อีก',
+      'locked.title': 'เข้าสู่ระบบเพื่อจัดการลิงก์', 'locked.text': 'รายการลิงก์ สถิติคลิก และ QR code ต้องเข้าสู่ระบบด้วยรหัสผ่านผู้ดูแลก่อน',
+      'setup.title': 'ตั้งค่า ADMIN_PASSWORD ก่อนเริ่มใช้งาน', 'setup.text': 'เซิร์ฟเวอร์ทำงานแล้ว แต่แดชบอร์ดจะใช้ไม่ได้จนกว่าจะตั้งรหัสผ่านผู้ดูแลใน environment',
+      'analytics.title': 'สถิติ', 'range.7': '7 วัน', 'range.30': '30 วัน', 'range.90': '90 วัน',
+      'tile.links': 'จำนวนลิงก์', 'tile.clicks': 'คลิกทั้งหมด', 'tile.today': 'คลิกวันนี้', 'tile.visitors': 'ผู้เข้าชม {days} วัน',
+      'chart.title': 'คลิกต่อวัน', 'chart.table': 'ตาราง', 'chart.chart': 'กราฟ', 'top.title': 'ลิงก์ยอดนิยม', 'top.empty': 'ยังไม่มีคลิกในช่วงนี้',
+      'links.title': 'ลิงก์', 'links.search': 'ค้นหาลิงก์', 'links.alltags': 'ทุกแท็ก', 'links.sort.created': 'ใหม่สุดก่อน', 'links.sort.clicks': 'คลิกมากสุด',
+      'links.bulk': 'เพิ่มหลายลิงก์', 'links.export': 'ส่งออก CSV', 'links.empty': 'ยังไม่มีลิงก์ เริ่มย่อลิงก์แรกด้านบนได้เลย', 'links.more': 'โหลดเพิ่ม', 'links.count': '{n} ลิงก์', 'links.showing': 'แสดง {shown} จาก {total}',
+      'link.clicks': '{n} คลิก', 'status.disabled': 'ปิดใช้งาน', 'status.expired': 'หมดอายุ',
+      'api.title': 'API', 'api.text': 'สร้างและจัดการลิงก์จากสคริปต์ของคุณเอง Make, Zapier หรือ n8n โดยส่ง API key แบบ Bearer token', 'api.base': 'Base URL',
+      'api.key.on': 'ตั้งค่าแล้ว', 'api.key.off': 'ยังไม่ได้ตั้งค่า (API_KEY)',
+      'login.title': 'เข้าสู่ระบบผู้ดูแล', 'login.password': 'รหัสผ่าน',
+      'qr.title': 'QR code', 'qr.size': 'ขนาด', 'qr.color': 'สี', 'qr.png': 'ดาวน์โหลด PNG', 'qr.svg': 'ดาวน์โหลด SVG',
+      'qr.note': 'QR แบบไดนามิก: เปลี่ยนปลายทางภายหลังได้ QR ที่พิมพ์ไปแล้วยังใช้งานได้',
+      'stats.title': 'สถิติลิงก์', 'stats.window': 'คลิก {days} วัน', 'stats.visitors': 'ผู้เข้าชม', 'stats.today': 'วันนี้', 'stats.all': 'ทั้งหมด', 'stats.bots': 'บอท (ไม่นับ)',
+      'stats.devices': 'อุปกรณ์', 'stats.browsers': 'เบราว์เซอร์', 'stats.os': 'ระบบปฏิบัติการ', 'stats.referrers': 'ที่มา', 'stats.countries': 'ประเทศ',
+      'stats.recent': 'คลิกล่าสุด', 'stats.csv': 'ดาวน์โหลด CSV คลิก', 'stats.empty': 'ยังไม่มีข้อมูล',
+      'col.time': 'เวลา', 'col.country': 'ประเทศ', 'col.device': 'อุปกรณ์', 'col.browser': 'เบราว์เซอร์', 'col.referrer': 'ที่มา', 'col.date': 'วันที่', 'col.clicks': 'คลิก', 'col.visitors': 'ผู้เข้าชม',
+      'edit.title': 'แก้ไขลิงก์', 'edit.active': 'เปิดใช้งานลิงก์', 'edit.save': 'บันทึก',
+      'bulk.title': 'เพิ่มหลายลิงก์', 'bulk.help': 'หนึ่งลิงก์ต่อบรรทัด ใส่ชื่อลิงก์และชื่อเรียกต่อท้ายได้ โดยคั่นด้วยจุลภาค', 'bulk.submit': 'สร้างลิงก์', 'bulk.result': 'สร้างสำเร็จ {ok} ไม่สำเร็จ {bad}', 'bulk.empty': 'วางลิงก์อย่างน้อย 1 ลิงก์',
+      'confirm.delete': 'ลบลิงก์นี้หรือไม่? ลิงก์สั้นจะใช้งานไม่ได้อีก',
+      'toast.created': 'สร้างลิงก์สั้นแล้ว', 'toast.saved': 'บันทึกแล้ว', 'toast.deleted': 'ลบลิงก์แล้ว', 'toast.loggedout': 'ออกจากระบบแล้ว', 'toast.copyfail': 'คัดลอกไม่ได้ กรุณาเลือกลิงก์แล้วคัดลอกเอง',
+      'footer.by': 'เครื่องมือจาก {labs}', 'footer.privacy': 'ข้อมูลคลิกเก็บอยู่บนเซิร์ฟเวอร์นี้เท่านั้น', 'common.cancel': 'ยกเลิก',
+      'device.desktop': 'คอมพิวเตอร์', 'device.mobile': 'มือถือ', 'device.tablet': 'แท็บเล็ต', 'device.unknown': 'ไม่ทราบ', 'device.bot': 'บอท', 'ref.direct': 'เข้าตรง', 'ref.other': 'อื่น ๆ', 'country.XX': 'ไม่ทราบ',
+      'time.now': 'เมื่อสักครู่', 'time.min': '{n} นาทีที่แล้ว', 'time.hour': '{n} ชม. ที่แล้ว'
+    }
+  };
+
+  // ---------- helpers ----------
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  function h(tag, attrs = {}, ...children) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k === 'text') el.textContent = v;
+      else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const c of children.flat()) { if (c == null || c === false) continue; el.append(c instanceof Node ? c : document.createTextNode(String(c))); }
+    return el;
+  }
+  const ICONS = {
+    copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>',
+    link: '<svg viewBox="0 0 24 24" fill="none" stroke="#0057E8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.07 0l3-3a5 5 0 00-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 00-7.07 0l-3 3a5 5 0 007.07 7.07l1.5-1.5"/></svg>',
+    click: '<svg viewBox="0 0 24 24" fill="none" stroke="#0057E8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 10 2.5-4.5L19 14z"/><path d="M4 4l3 3M12 2v3M2 12h3M5.5 18.5l2-2"/></svg>',
+    today: '<svg viewBox="0 0 24 24" fill="none" stroke="#0057E8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+    people: '<svg viewBox="0 0 24 24" fill="none" stroke="#0057E8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0114 0"/><path d="M16 4a4 4 0 010 8M22 21a7 7 0 00-5-6.7"/></svg>'
+  };
+  function icon(name) { const span = h('span', { class: 'ico' }); span.innerHTML = ICONS[name]; return span; }
+
+  let lang = (() => { try { const saved = localStorage.getItem('shortener-lang'); if (saved === 'en' || saved === 'th') return saved; } catch { /* storage blocked */ } return /^th/i.test(navigator.language || '') ? 'th' : 'en'; })();
+  const t = (key, vars) => { let s = (I18N[lang] && I18N[lang][key]) ?? I18N.en[key] ?? key; if (vars) for (const [k, v] of Object.entries(vars)) s = s.split(`{${k}}`).join(v); return s; };
+  const locale = () => (lang === 'th' ? 'th-TH-u-ca-gregory' : 'en-GB');
+  const fmtNum = (n) => new Intl.NumberFormat(locale()).format(n || 0);
+  const fmtDate = (iso, withYear = true) => { const d = new Date(iso); return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString(locale(), withYear ? { day: 'numeric', month: 'short', year: 'numeric' } : { day: 'numeric', month: 'short' }); };
+  const fmtDateTime = (iso) => { const d = new Date(iso); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(locale(), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); };
+  function relTime(iso) {
+    const diff = (Date.now() - Date.parse(iso)) / 1000;
+    if (diff < 60) return t('time.now');
+    if (diff < 3600) return t('time.min', { n: Math.floor(diff / 60) });
+    if (diff < 86400) return t('time.hour', { n: Math.floor(diff / 3600) });
+    return fmtDateTime(iso);
+  }
+  const displayUrl = (url) => String(url).replace(/^https?:\/\//, '');
+  function countryName(cc) {
+    if (!cc || cc === 'XX') return t('country.XX');
+    try { return new Intl.DisplayNames([lang === 'th' ? 'th' : 'en'], { type: 'region' }).of(cc) || cc; } catch { return cc; }
+  }
+  function flag(cc) { return /^[A-Z]{2}$/.test(cc || '') && cc !== 'XX' ? String.fromCodePoint(...[...cc].map((c) => 0x1F1E6 + c.charCodeAt(0) - 65)) : '🌐'; }
+  const deviceName = (d) => t(`device.${d}`) === `device.${d}` ? d : t(`device.${d}`);
+  const refName = (r) => (r === 'direct' ? t('ref.direct') : r === 'other' ? t('ref.other') : r);
+
+  const toastEl = $('#toast'); let toastTimer = null;
+  function toast(msg, isError = false) { toastEl.textContent = msg; toastEl.className = `on${isError ? ' err' : ''}`; clearTimeout(toastTimer); toastTimer = setTimeout(() => { toastEl.className = ''; }, 2600); }
+  async function copyText(text) {
+    try { await navigator.clipboard.writeText(text); return true; } catch { /* fall through */ }
+    try { const ta = h('textarea', { style: 'position:fixed;opacity:0', text }); document.body.append(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); return ok; } catch { return false; }
+  }
+  function saveBlob(blob, filename) { const a = h('a', { href: URL.createObjectURL(blob), download: filename }); document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); }
+
+  const progress = $('#progress'); let inflight = 0;
+  async function api(path, opts = {}) {
+    inflight += 1; progress.classList.add('on');
+    try {
+      const res = await fetch(path, { method: opts.method || 'GET', headers: opts.body ? { 'Content-Type': 'application/json' } : {}, body: opts.body ? JSON.stringify(opts.body) : undefined });
+      const text = await res.text(); let data = null;
+      try { data = text ? JSON.parse(text) : null; } catch { data = null; }
+      if (!res.ok) { const err = new Error((data && data.error) || t('error.generic')); err.status = res.status; throw err; }
+      return data;
+    } finally { inflight -= 1; if (!inflight) progress.classList.remove('on'); }
+  }
+
+  // ---------- modals ----------
+  function openModal(id) { const m = $(id); m.classList.add('open'); m.setAttribute('aria-hidden', 'false'); document.body.classList.add('modal-open'); const first = m.querySelector('input:not([type=checkbox]), textarea, select'); if (first) setTimeout(() => first.focus(), 30); }
+  function closeModals() { $$('.modal.open').forEach((m) => { m.classList.remove('open'); m.setAttribute('aria-hidden', 'true'); }); document.body.classList.remove('modal-open'); }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModals(); });
+  $$('.modal').forEach((m) => m.addEventListener('mousedown', (e) => { if (e.target === m) closeModals(); }));
+  $$('.modal-close').forEach((b) => b.addEventListener('click', closeModals));
+
+  // ---------- state ----------
+  const state = { session: null, links: [], tags: [], total: 0, q: '', tag: '', sort: 'created', range: 30, overview: null, chartMode: 'chart', pending: null, qrLink: null, statsLink: null, stats: null, statsRange: 30, editLink: null, lastResult: null };
+
+  // ---------- language ----------
+  function applyLang() {
+    document.documentElement.lang = lang;
+    $$('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
+    $$('[data-i18n-ph]').forEach((el) => { el.placeholder = t(el.dataset.i18nPh); });
+    $('#lang-btn').textContent = lang === 'en' ? 'ไทย' : 'EN';
+    document.title = `Short Link · ${BRAND.name}`;
+    const by = $('#footer-by'); by.textContent = '';
+    const label = t('footer.by', { labs: '\u0000' }).split('\u0000');
+    by.append(label[0], BRAND.labsUrl ? h('a', { href: BRAND.labsUrl, target: '_blank', rel: 'noopener', text: BRAND.labs }) : h('b', { text: BRAND.labs }), label[1] || '');
+    renderSession(); renderResult(); renderOverview(); renderLinks(); renderTagFilter(); if (state.stats) renderStats();
+  }
+  $('#lang-btn').addEventListener('click', () => { lang = lang === 'en' ? 'th' : 'en'; try { localStorage.setItem('shortener-lang', lang); } catch { /* ignore */ } applyLang(); });
+
+  // ---------- session ----------
+  function renderSession() {
+    const s = state.session; if (!s) return;
+    const authed = s.authenticated;
+    $('#auth-btn').textContent = authed ? t('auth.logout') : t('auth.login');
+    $('#setup-notice').classList.toggle('hidden', s.configured);
+    $('#locked').classList.toggle('hidden', !s.configured || authed);
+    $('#analytics').classList.toggle('hidden', !authed);
+    $('#links').classList.toggle('hidden', !authed);
+    $('#public-note').textContent = !authed && s.publicShorten ? t('form.public') : '';
+    const sel = $('#f-domain'); sel.textContent = '';
+    const domains = s.domains.length ? s.domains : [s.defaultDomain];
+    domains.forEach((d) => sel.append(h('option', { value: s.domains.length ? d : '', text: displayUrl(d) })));
+    sel.disabled = domains.length < 2;
+    $('#api-base').textContent = s.defaultDomain;
+    $('#api-key-state').textContent = s.apiEnabled ? t('api.key.on') : t('api.key.off');
+    $('#api-dot').classList.toggle('off', !s.apiEnabled);
+    $('#api-example').textContent = `curl -X POST ${s.defaultDomain}/api/links \\\n  -H "Authorization: Bearer YOUR_API_KEY" \\\n  -H "Content-Type: application/json" \\\n  -d '{"url":"https://example.com/landing?utm_source=line","slug":"line-oct","tags":["line"]}'\n\n# → { "link": { "shortUrl": "${s.defaultDomain}/line-oct", "clicks": 0, ... } }`;
+  }
+  async function loadSession() {
+    state.session = await api('/api/session');
+    renderSession();
+    if (state.session.authenticated) { await Promise.all([loadOverview(), loadLinks(true)]); }
+    else { state.links = []; state.overview = null; renderLinks(); }
+  }
+  $('#auth-btn').addEventListener('click', async () => {
+    if (state.session && state.session.authenticated) { await api('/api/logout', { method: 'POST', body: {} }); toast(t('toast.loggedout')); await loadSession(); }
+    else openLogin();
+  });
+  $('#locked-login').addEventListener('click', openLogin);
+  function openLogin() { $('#login-error').textContent = ''; $('#login-password').value = ''; openModal('#login-modal'); }
+  $('#login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const err = $('#login-error'); err.textContent = '';
+    try {
+      await api('/api/login', { method: 'POST', body: { password: $('#login-password').value } });
+      closeModals(); await loadSession();
+      if (state.pending) { const payload = state.pending; state.pending = null; await createLink(payload); }
+    } catch (ex) { err.textContent = ex.message; }
+  });
+
+  // ---------- shorten form ----------
+  const form = $('#shorten-form');
+  const utmFields = ['source', 'medium', 'campaign', 'content'];
+  function withScheme(raw) { return /^[a-z][a-z0-9+.-]*:/i.test(raw) ? raw : `https://${raw}`; }
+  function buildUrl() {
+    const raw = $('#f-url').value.trim(); if (!raw) return '';
+    const utm = utmFields.map((k) => [k, $(`#f-utm-${k}`).value.trim()]).filter(([, v]) => v);
+    if (!utm.length) return raw;
+    try { const u = new URL(withScheme(raw)); utm.forEach(([k, v]) => u.searchParams.set(`utm_${k}`, v)); return u.href; } catch { return raw; }
+  }
+  function updatePreview() { const url = buildUrl(); const has = utmFields.some((k) => $(`#f-utm-${k}`).value.trim()); $('#utm-preview').textContent = has && url ? url : ''; }
+  utmFields.forEach((k) => $(`#f-utm-${k}`).addEventListener('input', updatePreview));
+  $('#f-url').addEventListener('input', updatePreview);
+  function readForm() {
+    const expires = $('#f-expires').value;
+    return { url: buildUrl(), slug: $('#f-slug').value.trim(), title: $('#f-title').value.trim(), tags: $('#f-tags').value, domain: $('#f-domain').value || undefined, expiresAt: expires ? new Date(expires).toISOString() : undefined };
+  }
+  async function createLink(payload) {
+    const btn = $('#shorten-btn'); const errEl = $('#form-error'); errEl.textContent = '';
+    btn.disabled = true; btn.textContent = t('form.submitting');
+    try {
+      const data = await api('/api/links', { method: 'POST', body: payload });
+      state.lastResult = data.link; renderResult();
+      if (state.session && state.session.authenticated) { state.links.unshift(data.link); state.total += 1; renderLinks(); loadOverview(); loadTags(); }
+      form.reset(); updatePreview(); toast(t('toast.created'));
+    } catch (ex) {
+      if (ex.status === 401) { state.pending = payload; openLogin(); }
+      else { errEl.textContent = ex.message; $('#f-url').classList.add('is-error'); }
+    } finally { btn.disabled = false; btn.textContent = t('form.submit'); }
+  }
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const payload = readForm(); $('#f-url').classList.remove('is-error');
+    if (!payload.url) { $('#form-error').textContent = t('error.url'); $('#f-url').classList.add('is-error'); $('#f-url').focus(); return; }
+    createLink(payload);
+  });
+  $('#f-url').addEventListener('input', () => { $('#f-url').classList.remove('is-error'); $('#form-error').textContent = ''; });
+  function copyButton(text, cls = 'copy-btn') {
+    const b = h('button', { type: 'button', class: cls, 'aria-label': t('btn.copy'), title: t('btn.copy') }); b.innerHTML = ICONS.copy;
+    b.addEventListener('click', async () => { if (await copyText(text)) toast(t('btn.copied')); else toast(t('toast.copyfail'), true); });
+    return b;
+  }
+  function renderResult() {
+    const box = $('#result'); box.textContent = '';
+    const link = state.lastResult; if (!link) { box.classList.add('hidden'); return; }
+    box.classList.remove('hidden');
+    const authed = state.session && state.session.authenticated;
+    box.append(
+      h('div', { class: 'label', text: t('result.title') }),
+      h('div', { class: 'short', text: link.shortUrl }),
+      h('div', { class: 'dest', text: link.url }),
+      h('div', { class: 'actions' },
+        h('button', { type: 'button', class: 'btn sm', onclick: async () => { if (await copyText(link.shortUrl)) toast(t('btn.copied')); else toast(t('toast.copyfail'), true); } }, t('btn.copy')),
+        h('button', { type: 'button', class: 'btn sm', onclick: () => openQr(link) }, t('btn.qr')),
+        authed ? h('button', { type: 'button', class: 'btn sm', onclick: () => openStats(link) }, t('btn.stats')) : null,
+        h('a', { class: 'btn sm', href: link.shortUrl, target: '_blank', rel: 'noopener' }, t('btn.open')),
+        h('button', { type: 'button', class: 'link-btn', onclick: () => { state.lastResult = null; renderResult(); $('#f-url').focus(); } }, t('btn.another'))
+      )
+    );
+  }
+
+  // ---------- overview ----------
+  async function loadOverview() {
+    if (!state.session || !state.session.authenticated) return;
+    try { state.overview = await api(`/api/stats/overview?days=${state.range}`); renderOverview(); } catch (ex) { toast(ex.message, true); }
+  }
+  $$('#range button').forEach((b) => b.addEventListener('click', () => { state.range = Number(b.dataset.days); $$('#range button').forEach((x) => x.classList.toggle('on', x === b)); loadOverview(); }));
+  $('#chart-toggle').addEventListener('click', () => { state.chartMode = state.chartMode === 'chart' ? 'table' : 'chart'; renderOverview(); });
+  function renderOverview() {
+    const o = state.overview; const tiles = $('#tiles'); tiles.textContent = ''; if (!o) return;
+    const tile = (name, value, label) => h('div', { class: 'tile' }, icon(name), h('div', { class: 'value', text: fmtNum(value) }), h('div', { class: 'label', text: label }));
+    tiles.append(tile('link', o.totals.links, t('tile.links')), tile('click', o.totals.clicks, t('tile.clicks')), tile('today', o.totals.today, t('tile.today')), tile('people', o.totals.visitors, t('tile.visitors', { days: o.days })));
+    $('#chart-toggle').textContent = state.chartMode === 'chart' ? t('chart.table') : t('chart.chart');
+    const chart = $('#overview-chart');
+    if (state.chartMode === 'chart') renderBarChart(chart, o.timeline); else renderTimelineTable(chart, o.timeline);
+    const top = $('#top-links'); top.textContent = '';
+    if (!o.topLinks.length) { top.append(h('p', { class: 'empty', text: t('top.empty') })); return; }
+    const max = Math.max(...o.topLinks.map((l) => l.windowClicks));
+    o.topLinks.forEach((l) => {
+      top.append(h('div', { class: 'brow' },
+        h('button', { type: 'button', class: 'link-btn name', style: 'text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap', title: l.url, onclick: () => openStats(l) }, l.title || displayUrl(l.shortUrl)),
+        h('span', { class: 'count', text: fmtNum(l.windowClicks) }),
+        h('div', { class: 'track' }, h('div', { class: 'fill', style: `width:${Math.max(3, (l.windowClicks / max) * 100)}%` }))
+      ));
+    });
+  }
+
+  // ---------- chart ----------
+  function niceTicks(max, count) {
+    const rough = Math.max(1, max) / count;
+    const mag = Math.pow(10, Math.floor(Math.log10(rough)));
+    const res = rough / mag;
+    let step = (res <= 1 ? 1 : res <= 2 ? 2 : res <= 5 ? 5 : 10) * mag;
+    step = Math.max(1, step);
+    const top = Math.max(step, Math.ceil(max / step) * step);
+    const ticks = []; for (let v = 0; v <= top; v += step) ticks.push(v);
+    return ticks;
+  }
+  function renderBarChart(container, points) {
+    container.textContent = '';
+    const width = Math.max(280, container.clientWidth || 600), height = 220;
+    const pad = { top: 12, right: 8, bottom: 28, left: 40 };
+    const plotW = width - pad.left - pad.right, plotH = height - pad.top - pad.bottom;
+    const max = Math.max(1, ...points.map((p) => p.clicks));
+    const ticks = niceTicks(max, 4); const top = ticks[ticks.length - 1];
+    const NS = 'http://www.w3.org/2000/svg';
+    const mk = (name, attrs) => { const el = document.createElementNS(NS, name); for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v); return el; };
+    const svg = mk('svg', { viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': t('chart.title') });
+    ticks.forEach((v) => {
+      const y = pad.top + plotH - (v / top) * plotH;
+      svg.append(mk('line', { x1: pad.left, x2: width - pad.right, y1: y, y2: y, class: 'grid' }));
+      const txt = mk('text', { x: pad.left - 8, y: y + 4, class: 'tick', 'text-anchor': 'end' }); txt.textContent = fmtNum(v); svg.append(txt);
+    });
+    const tip = h('div', { class: 'chart-tip' });
+    const band = plotW / points.length; const barW = Math.max(1, Math.min(24, band - 2));
+    const labelEvery = Math.max(1, Math.ceil(points.length / (width < 480 ? 4 : 7)));
+    points.forEach((p, i) => {
+      const x0 = pad.left + i * band; const x = x0 + (band - barW) / 2;
+      const hgt = (p.clicks / top) * plotH; const y = pad.top + plotH - hgt; const r = Math.min(4, hgt, barW / 2);
+      const bar = mk('path', { d: hgt > 0 ? `M${x},${y + r} a${r},${r} 0 0 1 ${r},-${r} h${barW - 2 * r} a${r},${r} 0 0 1 ${r},${r} v${hgt - r} h-${barW} z` : '', class: 'bar' });
+      const hit = mk('rect', { x: x0, y: pad.top, width: band, height: plotH, class: 'hit', tabindex: '0', role: 'img', 'aria-label': `${fmtDate(p.date)}: ${fmtNum(p.clicks)}` });
+      const show = () => {
+        bar.classList.add('hover'); tip.textContent = '';
+        tip.append(h('strong', { text: `${fmtNum(p.clicks)} ${t('col.clicks').toLowerCase()}` }), h('span', { text: `${fmtDate(p.date)} · ${fmtNum(p.visitors)} ${t('col.visitors').toLowerCase()}` }));
+        const scale = container.clientWidth / width;
+        tip.style.left = `${Math.min(container.clientWidth - 70, Math.max(70, (x0 + band / 2) * scale))}px`;
+        tip.style.top = `${Math.max(0, y * scale - 8)}px`; tip.classList.add('on');
+      };
+      const hide = () => { bar.classList.remove('hover'); tip.classList.remove('on'); };
+      hit.addEventListener('pointerenter', show); hit.addEventListener('pointerleave', hide); hit.addEventListener('focus', show); hit.addEventListener('blur', hide);
+      svg.append(bar, hit);
+      if (i % labelEvery === 0) { const lbl = mk('text', { x: x0 + band / 2, y: height - 8, class: 'tick', 'text-anchor': 'middle' }); lbl.textContent = fmtDate(p.date, false); svg.append(lbl); }
+    });
+    container.append(svg, tip);
+  }
+  function renderTimelineTable(container, points) {
+    container.textContent = '';
+    const table = h('table', { class: 'data' }, h('thead', {}, h('tr', {}, h('th', { text: t('col.date') }), h('th', { class: 'num', text: t('col.clicks') }), h('th', { class: 'num', text: t('col.visitors') }))));
+    const body = h('tbody');
+    [...points].reverse().forEach((p) => body.append(h('tr', {}, h('td', { text: fmtDate(p.date) }), h('td', { class: 'num', text: fmtNum(p.clicks) }), h('td', { class: 'num', text: fmtNum(p.visitors) }))));
+    table.append(body); container.append(h('div', { class: 'table-scroll', style: 'max-height:240px;overflow:auto' }, table));
+  }
+  let resizeTimer = null;
+  window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { if (state.overview && state.chartMode === 'chart') renderOverview(); if (state.stats) renderStats(); }, 150); });
+
+  // ---------- links list ----------
+  let searchTimer = null;
+  $('#search').addEventListener('input', (e) => { clearTimeout(searchTimer); searchTimer = setTimeout(() => { state.q = e.target.value.trim(); loadLinks(true); }, 250); });
+  $('#tag-filter').addEventListener('change', (e) => { state.tag = e.target.value; loadLinks(true); });
+  $('#sort').addEventListener('change', (e) => { state.sort = e.target.value; loadLinks(true); });
+  $('#load-more').addEventListener('click', () => loadLinks(false));
+  async function loadLinks(reset) {
+    if (!state.session || !state.session.authenticated) return;
+    const offset = reset ? 0 : state.links.length;
+    try {
+      const data = await api(`/api/links?q=${encodeURIComponent(state.q)}&tag=${encodeURIComponent(state.tag)}&sort=${state.sort}&limit=50&offset=${offset}`);
+      state.links = reset ? data.links : state.links.concat(data.links); state.total = data.total; state.tags = data.tags;
+      renderLinks(); renderTagFilter();
+    } catch (ex) { toast(ex.message, true); }
+  }
+  async function loadTags() { try { const data = await api('/api/links?limit=1'); state.tags = data.tags; renderTagFilter(); } catch { /* ignore */ } }
+  function renderTagFilter() {
+    const sel = $('#tag-filter'); const current = state.tag; sel.textContent = '';
+    sel.append(h('option', { value: '', text: t('links.alltags') }));
+    (state.tags || []).forEach((tg) => sel.append(h('option', { value: tg.name, text: `${tg.name} (${tg.count})` })));
+    sel.value = current;
+    $$('#sort option').forEach((o) => { o.textContent = t(o.dataset.i18n); });
+  }
+  function linkRow(link) {
+    const row = h('article', { class: `link-row${link.status !== 'active' ? ' is-off' : ''}` });
+    const main = h('div', { class: 'link-main' },
+      h('div', { class: 'link-title', text: link.title || link.slug }),
+      h('div', { class: 'link-short' }, h('a', { href: link.shortUrl, target: '_blank', rel: 'noopener', text: displayUrl(link.shortUrl) }), copyButton(link.shortUrl)),
+      h('div', { class: 'link-dest', title: link.url, text: link.url }),
+      h('div', { class: 'link-meta' },
+        h('span', { class: 'pill', text: t('link.clicks', { n: fmtNum(link.clicks) }) }),
+        h('span', { class: 'meta', text: fmtDate(link.createdAt) }),
+        link.status !== 'active' ? h('span', { class: 'pill warn', text: t(`status.${link.status}`) }) : null,
+        link.tags.map((tag) => h('button', { type: 'button', class: 'chip', text: tag, onclick: () => { state.tag = tag; $('#tag-filter').value = tag; loadLinks(true); } }))
+      )
+    );
+    const actions = h('div', { class: 'link-actions' },
+      h('button', { type: 'button', class: 'btn sm', onclick: () => openStats(link) }, t('btn.stats')),
+      h('button', { type: 'button', class: 'btn sm', onclick: () => openQr(link) }, t('btn.qr')),
+      h('button', { type: 'button', class: 'btn sm', onclick: () => openEdit(link) }, t('btn.edit')),
+      h('button', { type: 'button', class: 'btn sm', onclick: () => deleteLink(link) }, t('btn.delete'))
+    );
+    row.append(main, actions); return row;
+  }
+  function renderLinks() {
+    const list = $('#list'); list.textContent = '';
+    if (!state.session || !state.session.authenticated) return;
+    $('#links-count').textContent = t('links.count', { n: fmtNum(state.total) });
+    if (!state.links.length) { list.append(h('p', { class: 'empty', text: t('links.empty') })); $('#list-note').textContent = ''; $('#load-more').classList.add('hidden'); return; }
+    state.links.forEach((l) => list.append(linkRow(l)));
+    $('#list-note').textContent = t('links.showing', { shown: fmtNum(state.links.length), total: fmtNum(state.total) });
+    $('#load-more').classList.toggle('hidden', state.links.length >= state.total);
+  }
+  function replaceLink(updated) {
+    state.links = state.links.map((l) => (l.id === updated.id ? updated : l));
+    if (state.lastResult && state.lastResult.id === updated.id) state.lastResult = updated;
+    renderLinks(); renderResult();
+  }
+  async function deleteLink(link) {
+    if (!window.confirm(t('confirm.delete'))) return;
+    try {
+      await api(`/api/links/${encodeURIComponent(link.id)}`, { method: 'DELETE' });
+      state.links = state.links.filter((l) => l.id !== link.id); state.total = Math.max(0, state.total - 1);
+      if (state.lastResult && state.lastResult.id === link.id) state.lastResult = null;
+      renderLinks(); renderResult(); loadOverview(); loadTags(); toast(t('toast.deleted'));
+    } catch (ex) { toast(ex.message, true); }
+  }
+
+  // ---------- edit ----------
+  function toLocalInput(iso) { if (!iso) return ''; const d = new Date(iso); const p = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; }
+  function openEdit(link) {
+    state.editLink = link; $('#edit-error').textContent = '';
+    $('#e-url').value = link.url; $('#e-slug').value = link.slug; $('#e-title').value = link.title || ''; $('#e-tags').value = link.tags.join(', ');
+    $('#e-expires').value = toLocalInput(link.expiresAt); $('#e-active').checked = link.active;
+    openModal('#edit-modal');
+  }
+  $('#edit-cancel').addEventListener('click', closeModals);
+  $('#edit-form').addEventListener('submit', async (e) => {
+    e.preventDefault(); const link = state.editLink; if (!link) return;
+    const expires = $('#e-expires').value;
+    const body = { url: $('#e-url').value.trim(), slug: $('#e-slug').value.trim(), title: $('#e-title').value.trim(), tags: $('#e-tags').value, active: $('#e-active').checked, expiresAt: expires ? new Date(expires).toISOString() : null };
+    try { const data = await api(`/api/links/${encodeURIComponent(link.id)}`, { method: 'PATCH', body }); replaceLink(data.link); closeModals(); toast(t('toast.saved')); loadTags(); }
+    catch (ex) { $('#edit-error').textContent = ex.message; }
+  });
+
+  // ---------- bulk ----------
+  $('#bulk-btn').addEventListener('click', () => { $('#bulk-error').textContent = ''; $('#bulk-result').textContent = ''; openModal('#bulk-modal'); });
+  $('#bulk-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const items = $('#bulk-text').value.split('\n').map((line) => line.trim()).filter(Boolean).map((line) => {
+      const parts = line.split(/[,\t]/).map((s) => s.trim());
+      return { url: parts[0], slug: parts[1] || undefined, title: parts[2] || undefined };
+    });
+    const errEl = $('#bulk-error'); errEl.textContent = '';
+    if (!items.length) { errEl.textContent = t('bulk.empty'); return; }
+    try {
+      const data = await api('/api/links/bulk', { method: 'POST', body: { items } });
+      const box = $('#bulk-result'); box.textContent = '';
+      box.append(h('p', { style: 'font-weight:600', text: t('bulk.result', { ok: fmtNum(data.created.length), bad: fmtNum(data.errors.length) }) }));
+      if (data.errors.length) { const ul = h('ul', { style: 'margin:8px 0 0;padding-left:18px;font-size:13px;color:var(--red)' }); data.errors.forEach((er) => ul.append(h('li', { text: `${typeof er.input === 'string' ? er.input : (er.input && er.input.url) || '?'} — ${er.error}` }))); box.append(ul); }
+      if (data.created.length) { $('#bulk-text').value = data.errors.map((er) => (typeof er.input === 'string' ? er.input : [er.input.url, er.input.slug, er.input.title].filter(Boolean).join(', '))).join('\n'); loadLinks(true); loadOverview(); toast(t('toast.created')); }
+    } catch (ex) { errEl.textContent = ex.message; }
+  });
+
+  // ---------- QR ----------
+  function openQr(link) { state.qrLink = link; renderQr(); openModal('#qr-modal'); }
+  function renderQr() {
+    const link = state.qrLink; if (!link) return;
+    const qr = QRGen.encode(link.shortUrl, 'M');
+    const canvas = $('#qr-canvas'); const dpr = Math.min(3, window.devicePixelRatio || 1);
+    QRGen.drawCanvas(qr, canvas, { size: Math.round(220 * dpr), fg: $('#qr-color').value, margin: 3 });
+    canvas.style.width = '220px'; canvas.style.height = '220px';
+    $('#qr-url').textContent = link.shortUrl;
+  }
+  $('#qr-color').addEventListener('change', renderQr);
+  $('#qr-png').addEventListener('click', () => {
+    const link = state.qrLink; if (!link) return;
+    const qr = QRGen.encode(link.shortUrl, 'M'); const c = document.createElement('canvas');
+    QRGen.drawCanvas(qr, c, { size: Number($('#qr-size').value), fg: $('#qr-color').value });
+    c.toBlob((blob) => saveBlob(blob, `qr-${link.slug}.png`), 'image/png');
+  });
+  $('#qr-svg').addEventListener('click', () => {
+    const link = state.qrLink; if (!link) return;
+    const svg = QRGen.toSvg(QRGen.encode(link.shortUrl, 'M'), { size: Number($('#qr-size').value), fg: $('#qr-color').value });
+    saveBlob(new Blob([svg], { type: 'image/svg+xml' }), `qr-${link.slug}.svg`);
+  });
+
+  // ---------- stats ----------
+  async function openStats(link) {
+    state.statsLink = link; state.stats = null; state.statsRange = state.range;
+    $('#stats-body').textContent = ''; openModal('#stats-modal');
+    await loadStats();
+  }
+  async function loadStats() {
+    const link = state.statsLink; if (!link) return;
+    try { state.stats = await api(`/api/links/${encodeURIComponent(link.id)}/stats?days=${state.statsRange}`); renderStats(); } catch (ex) { toast(ex.message, true); }
+  }
+  function breakdown(title, items, nameOf) {
+    const box = h('div', { class: 'breakdown' }, h('h4', { text: title }));
+    if (!items.length) { box.append(h('p', { class: 'empty', text: t('stats.empty') })); return box; }
+    const max = items[0].count;
+    items.forEach((it) => box.append(h('div', { class: 'brow' }, h('span', { class: 'name', text: nameOf(it.name), title: it.name }), h('span', { class: 'count', text: fmtNum(it.count) }), h('div', { class: 'track' }, h('div', { class: 'fill', style: `width:${Math.max(3, (it.count / max) * 100)}%` })))));
+    return box;
+  }
+  function renderStats() {
+    const s = state.stats; const body = $('#stats-body'); if (!s || !$('#stats-modal').classList.contains('open')) return;
+    body.textContent = '';
+    const link = s.link;
+    const head = h('div', { class: 'stats-head' },
+      h('div', { class: 'short', style: 'display:flex;align-items:center;gap:8px;flex-wrap:wrap' }, h('a', { href: link.shortUrl, target: '_blank', rel: 'noopener', text: displayUrl(link.shortUrl) }), copyButton(link.shortUrl)),
+      h('div', { class: 'dest', text: link.url })
+    );
+    const range = h('div', { class: 'range', role: 'group' });
+    [7, 30, 90].forEach((d) => range.append(h('button', { type: 'button', class: d === state.statsRange ? 'on' : '', onclick: () => { state.statsRange = d; loadStats(); } }, t(`range.${d}`))));
+    const tiles = h('div', { class: 'tiles' },
+      h('div', { class: 'tile' }, h('div', { class: 'value', text: fmtNum(s.totals.window) }), h('div', { class: 'label', text: t('stats.window', { days: s.days }) })),
+      h('div', { class: 'tile' }, h('div', { class: 'value', text: fmtNum(s.totals.visitors) }), h('div', { class: 'label', text: t('stats.visitors') })),
+      h('div', { class: 'tile' }, h('div', { class: 'value', text: fmtNum(s.totals.today) }), h('div', { class: 'label', text: t('stats.today') })),
+      h('div', { class: 'tile' }, h('div', { class: 'value', text: fmtNum(s.totals.clicks) }), h('div', { class: 'label', text: t('stats.all') }))
+    );
+    const chartPanel = h('div', { class: 'panel' }, h('div', { class: 'panel-head' }, h('h3', { text: t('chart.title') })), h('div', { class: 'chart', id: 'stats-chart' }));
+    const grid = h('div', { class: 'breakdowns' },
+      breakdown(t('stats.devices'), s.devices, deviceName), breakdown(t('stats.browsers'), s.browsers, (n) => n),
+      breakdown(t('stats.referrers'), s.referrers, refName), breakdown(t('stats.countries'), s.countries, (n) => `${flag(n)} ${countryName(n)}`),
+      breakdown(t('stats.os'), s.os, (n) => n)
+    );
+    const recent = h('div', { class: 'panel' }, h('div', { class: 'panel-head' }, h('h3', { text: t('stats.recent') }), h('a', { class: 'btn sm', href: `/api/links/${encodeURIComponent(link.id)}/clicks.csv`, download: '' }, t('stats.csv'))));
+    if (!s.recent.length) recent.append(h('p', { class: 'empty', text: t('stats.empty') }));
+    else {
+      const table = h('table', { class: 'data' }, h('thead', {}, h('tr', {}, h('th', { text: t('col.time') }), h('th', { text: t('col.country') }), h('th', { text: t('col.device') }), h('th', { text: t('col.browser') }), h('th', { text: t('col.referrer') }))));
+      const tb = h('tbody');
+      s.recent.forEach((c) => tb.append(h('tr', {}, h('td', { text: relTime(c.t) }), h('td', { text: `${flag(c.cc)} ${c.city ? `${c.city}, ` : ''}${countryName(c.cc)}` }), h('td', { text: deviceName(c.dev) }), h('td', { text: `${c.br} · ${c.os}` }), h('td', { text: refName(c.ref) }))));
+      table.append(tb); recent.append(h('div', { class: 'table-scroll' }, table));
+    }
+    body.append(head, range, tiles, chartPanel, grid, recent);
+    if (s.totals.bots) body.append(h('p', { class: 'help', text: `${t('stats.bots')}: ${fmtNum(s.totals.bots)}` }));
+    renderBarChart($('#stats-chart'), s.timeline);
+  }
+
+  // ---------- boot ----------
+  applyLang();
+  loadSession().catch((ex) => toast(ex.message, true));
+})();
+</script>
+</body>
+</html>

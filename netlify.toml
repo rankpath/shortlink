@@ -1,0 +1,7 @@
+[build]
+  publish = "public"
+  command = "npm install --omit=dev --no-audit --no-fund"
+
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["lib/**"]
