@@ -1,7 +1,7 @@
 {
   "name": "url-shortener",
   "version": "1.0.0",
-  "description": "Short Link: self-hosted URL shortener with click analytics, QR codes and a REST API. Runs on Node or Netlify.",
+  "description": "Short Link: self-hosted URL shortener with click analytics, QR codes and a REST API. Runs on Node or in Docker.",
   "private": true,
   "type": "module",
   "engines": {

@@ -27,7 +27,6 @@ Not included: team accounts with separate logins, A/B split links, geo-routing, 
 Requires Node.js 22 or newer.
 
 ```bash
-cd shortener
 cp .env.example .env            # edit ADMIN_PASSWORD and SHORT_DOMAINS
 export $(grep -v '^#' .env | xargs)
 npm start                       # http://localhost:3000
@@ -55,7 +54,7 @@ npm test
 
 ## Storage
 
-On the Node server, two plain files in `DATA_DIR` (on Netlify, the same data lives in Netlify Blobs):
+Two plain files in `DATA_DIR` (default `./data`):
 
 - `links.json` – all links (rewritten atomically on change).
 - `clicks.ndjson` – one JSON line per click, appended on every redirect, loaded into memory at start.
@@ -76,28 +75,18 @@ docker run -d --name shortener -p 3000:3000 \
   -v shortener-data:/app/data url-shortener
 ```
 
-Put Nginx, Caddy or Cloudflare in front for TLS and point the short domain at it.
+Put Nginx, Caddy or Cloudflare in front for TLS and point the short domain at it. The `-v` volume keeps `links.json` and `clicks.ndjson` when the container is replaced. Without it, they are lost.
 
 ### Namecheap cPanel (Node.js app)
 
-1. Upload the `shortener` folder (server.js, package.json, public/) to e.g. `~/shortener`.
-2. cPanel → **Setup Node.js App** → Create application: Node 22, application root `shortener`, startup file `server.js`, application URL = your short domain or subdomain (e.g. `s.yourdomain.com`).
+1. Upload `server.js`, `package.json`, `lib/` and `public/` to e.g. `~/shortlink`. The Node server does not use any npm package, so you do not need to run npm install.
+2. cPanel → **Setup Node.js App** → Create application: Node 22 or newer (if your cPanel offers it), application root `shortlink`, startup file `server.js`, application URL = your short domain or subdomain (e.g. `s.yourdomain.com`).
 3. Add environment variables: `ADMIN_PASSWORD`, `SHORT_DOMAINS=https://s.yourdomain.com`, `TRUST_PROXY=true`, `API_KEY`, `TZ=Asia/Bangkok`.
-4. Start the app. Data is written to `~/shortener/data`.
+4. Start the app. Data is written to `~/shortlink/data`.
 
-### Render / Railway / Fly
+### Railway / Render / Fly (Docker)
 
-Deploy the folder as a Node service, start command `npm start`, add the same environment variables, and attach a persistent disk mounted at `DATA_DIR`.
-
-### Netlify (Functions + Blobs)
-
-The same code runs on Netlify: `netlify/functions/app.mjs` serves the API and the redirects, `public/` is the static page, and clicks and links are stored in Netlify Blobs (store `short-link`).
-
-1. In Netlify, **Add new project → Import an existing project**, pick this repo, set **Base directory** to `shortener`. Build command and publish directory come from `netlify.toml`.
-2. Add environment variables (scope Functions): `ADMIN_PASSWORD`, `API_KEY`, `SESSION_SECRET`, `SHORT_DOMAINS=https://<your-site>.netlify.app`, `TZ=Asia/Bangkok`.
-3. Deploy. Add your own short domain in **Domain management** and append it to `SHORT_DOMAINS`.
-
-Country and city come from Netlify's geo data, so no CDN header setup is needed. Blobs is fine for thousands of clicks; for very high volume, move to Netlify DB.
+Deploy this repo from the `Dockerfile` (or as a Node service with start command `npm start`), add the same environment variables, and attach a persistent volume at `/app/data` (the `DATA_DIR`). Set `TRUST_PROXY=true` so client IPs and https come from the platform proxy. A platform without persistent storage (for example a free web tier) loses links on every redeploy. Fly.io also needs its own `fly.toml`, which this repo does not include.
 
 ### Custom domains
 
