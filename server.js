@@ -1,4 +1,4 @@
-// Short Link by RankPath Labs — self-hosted URL shortener, zero dependencies.
+// Short Link by Mergepdftool — self-hosted URL shortener, zero dependencies.
 // Node.js 22 or newer. Run with: ADMIN_PASSWORD=... node server.js
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
