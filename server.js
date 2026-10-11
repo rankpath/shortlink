@@ -20,7 +20,8 @@ const config = {
   sessionSecret: process.env.SESSION_SECRET || '',
   domains: parseDomains(process.env.SHORT_DOMAINS || process.env.BASE_URL)
 };
-const store = await createFileStore(process.env.DATA_DIR || join(here, 'data'));
+const dataDir = process.env.DATA_DIR || join(here, 'data');
+const store = await createFileStore(dataDir);
 const app = createShortener({ config, store });
 
 const staticCache = new Map();
@@ -84,4 +85,4 @@ if (!config.adminPassword) console.warn('[short-link] ADMIN_PASSWORD is not set:
 if (!config.domains.length) console.warn('[short-link] BASE_URL/SHORT_DOMAINS not set: short links will use the request host.');
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
-server.listen(port, host, () => console.log(`[short-link] listening on http://${host}:${port} · ${store.size()} links loaded`));
+server.listen(port, host, () => console.log(`[short-link] listening on http://${host}:${port} · ${store.size()} links loaded · data in ${dataDir}`));

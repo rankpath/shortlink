@@ -84,9 +84,19 @@ Put Nginx, Caddy or Cloudflare in front for TLS and point the short domain at it
 3. Add environment variables: `ADMIN_PASSWORD`, `SHORT_DOMAINS=https://s.yourdomain.com`, `TRUST_PROXY=true`, `API_KEY`, `TZ=Asia/Bangkok`.
 4. Start the app. Data is written to `~/shortlink/data`.
 
-### Railway / Render / Fly (Docker)
+### Render
 
-Deploy this repo from the `Dockerfile` (or as a Node service with start command `npm start`), add the same environment variables, and attach a persistent volume at `/app/data` (the `DATA_DIR`). Set `TRUST_PROXY=true` so client IPs and https come from the platform proxy. A platform without persistent storage (for example a free web tier) loses links on every redeploy. Fly.io also needs its own `fly.toml`, which this repo does not include.
+1. **New → Web Service**, connect this repo, branch `main`.
+2. Runtime **Docker** uses the `Dockerfile`. Runtime **Node** works too: build command `npm install`, start command `npm start`.
+3. Add a persistent disk (paid instances only). With Docker, mount it at `/app/data`. With the Node runtime, mount it at e.g. `/var/data` and also set `DATA_DIR=/var/data`; without `DATA_DIR` the app writes inside the code folder, which is wiped on every deploy.
+4. Environment variables: `ADMIN_PASSWORD`, `API_KEY`, `SESSION_SECRET`, `SHORT_DOMAINS=https://<your-service>.onrender.com` (add your own domain later), `TRUST_PROXY=true`, `TZ=Asia/Bangkok`.
+5. Deploy, then check the log line `listening on … · N links loaded · data in <folder>`. The folder must be the disk path.
+
+Without a disk (for example on a free instance), links and clicks are lost on every deploy or restart.
+
+### Railway / Fly (Docker)
+
+Deploy from the `Dockerfile`, add the same environment variables, and attach a persistent volume at `/app/data` (or mount it elsewhere and set `DATA_DIR` to that path). Set `TRUST_PROXY=true` so client IPs and https come from the platform proxy. Fly.io also needs its own `fly.toml`, which this repo does not include.
 
 ### Custom domains
 
@@ -127,4 +137,4 @@ Rate limits: 120 API requests per minute per IP, 10 login attempts per 15 minute
 
 Colours and type follow the Short Link brand guide (`brand/short-link-brand-guide.html`). Signal Pink `#F64B72` is the logo colour, Deep Rose `#D01170` is for buttons and links, Blush `#FFF0F3` is for surfaces, Navy `#061E45` is for text, and red `#B42318` is for errors only. Fonts: Manrope (English) and Noto Sans Thai (Thai, no letter-spacing, line height 1.7).
 
-To change the wordmark or the footer link, edit the `BRAND` object at the top of the script in `public/index.html`.
+The logo files are in `public/brand/`. To change the footer credit or its link, edit the `BRAND` object at the top of the script in `public/index.html`.
