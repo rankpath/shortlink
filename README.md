@@ -1,7 +1,7 @@
-# Short Link (Mergepdftool)
+# Short Link
 
 Short Link is a self-hosted URL shortener with click analytics, QR codes, bulk import, a UTM builder and a REST API.
-One Node.js file, no dependencies, no build step. UI follows the Mergepdftool brand book and switches between Thai and English.
+One Node.js file, no dependencies, no build step. UI follows the Short Link brand guide (`brand/short-link-brand-guide.html`) and switches between Thai and English.
 
 ย่อลิงก์บนโดเมนของคุณเอง ดูสถิติคลิก (อุปกรณ์ เบราว์เซอร์ ที่มา ประเทศ) ดาวน์โหลด QR code และเชื่อมต่อผ่าน API
 ข้อมูลทั้งหมดเก็บบนเซิร์ฟเวอร์ของคุณ ไม่ส่งไปที่อื่น
@@ -12,7 +12,7 @@ One Node.js file, no dependencies, no build step. UI follows the Mergepdftool br
 |---|---|
 | Branded short links | Your own domain(s), random 6-character slug or custom alias |
 | Click analytics | Clicks per day, unique visitors, device, browser, OS, referrer, country (and city when a CDN sends it), bots counted separately |
-| QR codes | Generated in the browser, PNG or SVG, 512–2048 px, navy / royal blue / black |
+| QR codes | Generated in the browser, PNG or SVG, 512–2048 px, navy / deep rose / black |
 | Link management | Search, tags, sort, edit destination (dynamic QR keeps working), disable, expiry date, delete, CSV export |
 | Bulk add | Paste up to 100 URLs, optional alias and title per line |
 | UTM builder | Add utm_source / medium / campaign / content before shortening |
@@ -27,7 +27,6 @@ Not included: team accounts with separate logins, A/B split links, geo-routing, 
 Requires Node.js 22 or newer.
 
 ```bash
-cd shortener
 cp .env.example .env            # edit ADMIN_PASSWORD and SHORT_DOMAINS
 export $(grep -v '^#' .env | xargs)
 npm start                       # http://localhost:3000
@@ -55,7 +54,7 @@ npm test
 
 ## Storage
 
-On the Node server, two plain files in `DATA_DIR` (on Netlify, the same data lives in Netlify Blobs):
+Two plain files in `DATA_DIR` (default `./data`):
 
 - `links.json` – all links (rewritten atomically on change).
 - `clicks.ndjson` – one JSON line per click, appended on every redirect, loaded into memory at start.
@@ -76,28 +75,28 @@ docker run -d --name shortener -p 3000:3000 \
   -v shortener-data:/app/data url-shortener
 ```
 
-Put Nginx, Caddy or Cloudflare in front for TLS and point the short domain at it.
+Put Nginx, Caddy or Cloudflare in front for TLS and point the short domain at it. The `-v` volume keeps `links.json` and `clicks.ndjson` when the container is replaced. Without it, they are lost.
 
 ### Namecheap cPanel (Node.js app)
 
-1. Upload the `shortener` folder (server.js, package.json, public/) to e.g. `~/shortener`.
-2. cPanel → **Setup Node.js App** → Create application: Node 22, application root `shortener`, startup file `server.js`, application URL = your short domain or subdomain (e.g. `s.yourdomain.com`).
+1. Upload `server.js`, `package.json`, `lib/` and `public/` to e.g. `~/shortlink`. The Node server does not use any npm package, so you do not need to run npm install.
+2. cPanel → **Setup Node.js App** → Create application: Node 22 or newer (if your cPanel offers it), application root `shortlink`, startup file `server.js`, application URL = your short domain or subdomain (e.g. `s.yourdomain.com`).
 3. Add environment variables: `ADMIN_PASSWORD`, `SHORT_DOMAINS=https://s.yourdomain.com`, `TRUST_PROXY=true`, `API_KEY`, `TZ=Asia/Bangkok`.
-4. Start the app. Data is written to `~/shortener/data`.
+4. Start the app. Data is written to `~/shortlink/data`.
 
-### Render / Railway / Fly
+### Render
 
-Deploy the folder as a Node service, start command `npm start`, add the same environment variables, and attach a persistent disk mounted at `DATA_DIR`.
+1. **New → Web Service**, connect this repo, branch `main`.
+2. Runtime **Docker** uses the `Dockerfile`. Runtime **Node** works too: build command `npm install`, start command `npm start`.
+3. Add a persistent disk (paid instances only). With Docker, mount it at `/app/data`. With the Node runtime, mount it at e.g. `/var/data` and also set `DATA_DIR=/var/data`; without `DATA_DIR` the app writes inside the code folder, which is wiped on every deploy.
+4. Environment variables: `ADMIN_PASSWORD`, `API_KEY`, `SESSION_SECRET`, `SHORT_DOMAINS=https://<your-service>.onrender.com` (add your own domain later), `TRUST_PROXY=true`, `TZ=Asia/Bangkok`.
+5. Deploy, then check the log line `listening on … · N links loaded · data in <folder>`. The folder must be the disk path.
 
-### Netlify (Functions + Blobs)
+Without a disk (for example on a free instance), links and clicks are lost on every deploy or restart.
 
-The same code runs on Netlify: `netlify/functions/app.mjs` serves the API and the redirects, `public/` is the static page, and clicks and links are stored in Netlify Blobs (store `short-link`).
+### Railway / Fly (Docker)
 
-1. In Netlify, **Add new project → Import an existing project**, pick this repo, set **Base directory** to `shortener`. Build command and publish directory come from `netlify.toml`.
-2. Add environment variables (scope Functions): `ADMIN_PASSWORD`, `API_KEY`, `SESSION_SECRET`, `SHORT_DOMAINS=https://<your-site>.netlify.app`, `TZ=Asia/Bangkok`.
-3. Deploy. Add your own short domain in **Domain management** and append it to `SHORT_DOMAINS`.
-
-Country and city come from Netlify's geo data, so no CDN header setup is needed. Blobs is fine for thousands of clicks; for very high volume, move to Netlify DB.
+Deploy from the `Dockerfile`, add the same environment variables, and attach a persistent volume at `/app/data` (or mount it elsewhere and set `DATA_DIR` to that path). Set `TRUST_PROXY=true` so client IPs and https come from the platform proxy. Fly.io also needs its own `fly.toml`, which this repo does not include.
 
 ### Custom domains
 
@@ -136,6 +135,6 @@ Rate limits: 120 API requests per minute per IP, 10 login attempts per 15 minute
 
 ## Brand
 
-Colours and type follow the Mergepdftool brand book: White `#FFFFFF`, Ice `#EFF6FF`, Navy `#061638` for text, Royal Blue `#0057E8` for the single primary button and links, Cyan `#00A6F5` only for the logo and the loading bar, red `#B42318` only for errors. Fonts: Manrope (English) and Noto Sans Thai (Thai, no letter-spacing, line height 1.7).
+Colours and type follow the Short Link brand guide (`brand/short-link-brand-guide.html`). Signal Pink `#F64B72` is the logo colour, Deep Rose `#D01170` is for buttons and links, Blush `#FFF0F3` is for surfaces, Navy `#061E45` is for text, and red `#B42318` is for errors only. Fonts: Manrope (English) and Noto Sans Thai (Thai, no letter-spacing, line height 1.7).
 
-To change the wordmark or the footer link, edit the `BRAND` object at the top of the script in `public/index.html`.
+The logo files are in `public/brand/`. To change the footer credit or its link, edit the `BRAND` object at the top of the script in `public/index.html`.

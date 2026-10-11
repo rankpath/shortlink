@@ -46,8 +46,10 @@ test('health and home page are public', async () => {
   const health = await call('/health');
   assert.equal(health.status, 200); assert.equal(health.data.ok, true);
   const home = await call('/');
-  assert.equal(home.status, 200); assert.match(home.data, /Mergepdftool/);
+  assert.equal(home.status, 200); assert.match(home.data, /Short Link/);
   assert.match(home.headers.get('content-security-policy') || '', /default-src 'self'/);
+  const brandPng = await fetch(base + '/brand/favicon-32.png');
+  assert.equal(brandPng.status, 200); assert.equal(brandPng.headers.get('content-type'), 'image/png');
   const qr = await call('/qr.js');
   assert.equal(qr.status, 200); assert.match(qr.data, /QRGen/);
 });

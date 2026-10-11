@@ -20,7 +20,8 @@ const config = {
   sessionSecret: process.env.SESSION_SECRET || '',
   domains: parseDomains(process.env.SHORT_DOMAINS || process.env.BASE_URL)
 };
-const store = await createFileStore(process.env.DATA_DIR || join(here, 'data'));
+const dataDir = process.env.DATA_DIR || join(here, 'data');
+const store = await createFileStore(dataDir);
 const app = createShortener({ config, store });
 
 const staticCache = new Map();
@@ -55,6 +56,13 @@ const server = createServer(async (req, res) => {
       return res.end(await staticFile('index.html'));
     }
     if (url.pathname === '/qr.js') { res.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8', 'Cache-Control': 'public, max-age=3600', 'X-Content-Type-Options': 'nosniff' }); return res.end(await staticFile('qr.js')); }
+    if (/^\/brand\/[a-z0-9-]+\.png$/.test(url.pathname)) {
+      try {
+        const body = await readFile(join(publicDir, url.pathname));
+        res.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=86400', 'X-Content-Type-Options': 'nosniff' });
+        return res.end(body);
+      } catch { res.writeHead(404); return res.end(); }
+    }
     const request = await toRequest(req);
     const get = (name) => req.headers[name];
     const result = await app.handle(request, { ip: clientIp(req), country: countryFromHeaders(get), city: cityFromHeaders(get) });
@@ -77,4 +85,4 @@ if (!config.adminPassword) console.warn('[short-link] ADMIN_PASSWORD is not set:
 if (!config.domains.length) console.warn('[short-link] BASE_URL/SHORT_DOMAINS not set: short links will use the request host.');
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
-server.listen(port, host, () => console.log(`[short-link] listening on http://${host}:${port} · ${store.size()} links loaded`));
+server.listen(port, host, () => console.log(`[short-link] listening on http://${host}:${port} · ${store.size()} links loaded · data in ${dataDir}`));
