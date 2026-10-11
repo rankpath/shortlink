@@ -1,4 +1,4 @@
-// Short Link by Mergepdftool — self-hosted URL shortener, zero dependencies.
+// Short Link by RankPath Labs — self-hosted URL shortener, zero dependencies.
 // Node.js 22 or newer. Run with: ADMIN_PASSWORD=... node server.js
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
@@ -55,6 +55,13 @@ const server = createServer(async (req, res) => {
       return res.end(await staticFile('index.html'));
     }
     if (url.pathname === '/qr.js') { res.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8', 'Cache-Control': 'public, max-age=3600', 'X-Content-Type-Options': 'nosniff' }); return res.end(await staticFile('qr.js')); }
+    if (/^\/brand\/[a-z0-9-]+\.png$/.test(url.pathname)) {
+      try {
+        const body = await readFile(join(publicDir, url.pathname));
+        res.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=86400', 'X-Content-Type-Options': 'nosniff' });
+        return res.end(body);
+      } catch { res.writeHead(404); return res.end(); }
+    }
     const request = await toRequest(req);
     const get = (name) => req.headers[name];
     const result = await app.handle(request, { ip: clientIp(req), country: countryFromHeaders(get), city: cityFromHeaders(get) });

@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Short Link · Brand Guide v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --white:#FFFFFF; --blush:#FFF0F3; --navy:#061E45; --rose:#D01170; --signal:#F64B72; --bracket:#FCB8CA; --error:#B42318; --muted:#5B6B8C; --line:#EBDDE4; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: Manrope, "Noto Sans Thai", system-ui, sans-serif; color: var(--navy); background: var(--white); line-height: 1.6; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 40px 20px 72px; }
+h1 { font-size: 40px; line-height: 1.1; margin: 0 0 8px; letter-spacing: -0.02em; }
+h2 { font-size: 24px; margin: 56px 0 14px; padding-top: 28px; border-top: 1px solid var(--line); }
+h3 { font-size: 17px; margin: 24px 0 8px; }
+p { margin: 0 0 12px; }
+.th { font-family: "Noto Sans Thai", Manrope, sans-serif; line-height: 1.7; letter-spacing: 0; }
+.muted { color: var(--muted); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 8px 0 18px; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 700; font-size: 12px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+.stage { border: 1px solid var(--line); border-radius: 12px; padding: 28px; display: flex; align-items: center; justify-content: center; min-height: 150px; }
+.stage.blush { background: var(--blush); border-color: var(--blush); }
+.stage.navy-bg { background: var(--navy); }
+.label { font-size: 13px; color: var(--muted); margin-top: 8px; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 12px 0 18px; }
+.sw { border-radius: 12px; border: 1px solid var(--line); min-height: 116px; padding: 12px; display: flex; flex-direction: column; justify-content: flex-end; font-size: 13px; }
+.sw b { font-size: 15px; }
+.btn { display: inline-block; background: var(--rose); color: #FFFFFF; font-weight: 600; font-size: 15px; padding: 12px 20px; border-radius: 10px; }
+.btn.ghost { background: #FFFFFF; color: var(--navy); border: 1px solid var(--line); }
+.dont { border: 1px solid var(--error); border-radius: 12px; padding: 14px 18px; }
+.dont ul { margin-bottom: 0; }
+.note { background: var(--blush); border-radius: 12px; padding: 14px 18px; }
+ul { margin: 0 0 12px 20px; padding: 0; } li { margin: 4px 0; }
+.foot { margin-top: 56px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<img src="../public/brand/shortlink-wordmark-navy.png" alt="Short Link" height="40" style="display:block;margin-bottom:24px">
+<h1>Short Link brand guide</h1>
+<p class="muted">Version 1, October 2026. Identity (logo and colour), typography and tone of voice. Built by RankPath Labs. Thai and English are equal.</p>
+
+<h2>1. Brand idea</h2>
+<table>
+<tr><th>Language</th><th>Tagline</th></tr>
+<tr><td>English</td><td><b>Short links. Your data stays here.</b></td></tr>
+<tr><td><span class="th">Thai</span></td><td><b class="th">ลิงก์สั้น ข้อมูลอยู่กับคุณ</b></td></tr>
+</table>
+<p><b>Positioning.</b> Short Link gives you short links on your own domain, with clear click numbers. Your click data stays in your own storage.</p>
+<p class="th"><b>ตำแหน่งของแบรนด์</b> Short Link ช่วยให้คุณสร้างลิงก์สั้นบนโดเมนของคุณเอง พร้อมตัวเลขคลิกที่อ่านง่าย ข้อมูลการคลิกเก็บอยู่ในที่เก็บข้อมูลของคุณเอง</p>
+<p><b>Personality.</b> Plain, honest, quick. Like a good form, not a dashboard full of noise.</p>
+<table>
+<tr><th>Pillar</th><th>English</th><th>Thai</th></tr>
+<tr><td><b>Private</b></td><td>Your click data stays in your own storage.</td><td class="th">ข้อมูลการคลิกเก็บอยู่ในที่เก็บข้อมูลของคุณ</td></tr>
+<tr><td><b>Simple</b></td><td>One box, one button.</td><td class="th">กล่องเดียว ปุ่มเดียว</td></tr>
+<tr><td><b>Bilingual</b></td><td>Thai and English are equal.</td><td class="th">ภาษาไทยและภาษาอังกฤษเท่าเทียมกัน</td></tr>
+</table>
+
+<h2>2. Logo</h2>
+<p>The logo is the wordmark with four brackets in the "o" position. The brackets are a scan frame: it is the one visual idea in the brand.</p>
+<div class="grid">
+  <div><div class="stage"><img src="../public/brand/shortlink-wordmark-pink.png" alt="Short Link pink logo" style="width:100%;max-width:240px;height:auto"></div><div class="label"><b>Primary.</b> Signal Pink on white. Use at 120 px wide or more.</div></div>
+  <div><div class="stage"><img src="../public/brand/shortlink-wordmark-navy.png" alt="Short Link navy logo" style="width:100%;max-width:200px;height:auto"></div><div class="label"><b>One colour, Navy.</b> Use below 120 px wide, in the app header, and on blush.</div></div>
+  <div><div class="stage blush"><img src="../public/brand/shortlink-wordmark-navy.png" alt="Short Link navy logo on blush" style="width:100%;max-width:200px;height:auto"></div><div class="label"><b>On blush.</b> Navy only. The pink logo never goes on blush.</div></div>
+  <div><div class="stage"><img src="../public/brand/shortlink-symbol.png" alt="Short Link symbol" style="width:120px;height:120px"></div><div class="label"><b>Symbol.</b> The four brackets for icons and small spaces.</div></div>
+  <div><div class="stage"><img src="../public/brand/apple-touch-icon-180.png" alt="Short Link app icon" style="width:96px;height:96px;border-radius:20px"></div><div class="label"><b>App icon and favicon.</b> Pink square with pale brackets.</div></div>
+</div>
+<h3>Rules</h3>
+<ul>
+  <li><b>Clear space.</b> Keep at least the height of the letter "h" free on every side.</li>
+  <li><b>Minimum size.</b> Pink wordmark 120 px wide. Navy wordmark 96 px wide. Symbol 24 px.</li>
+  <li><b>Write the name</b> as "Short Link" in running text, in the same font as the text around it.</li>
+</ul>
+<div class="dont"><b>Don't</b>
+<ul>
+  <li>Recolour the brackets, or make only part of the wordmark a different colour.</li>
+  <li>Put the pink logo on Deep Rose, on blush, on photos, or on navy.</li>
+  <li>Add shadows, outlines, glows or gradients. Stretch or skew the logo.</li>
+  <li>Use the bracket tint alone as an icon on white. It is too pale (see contrast below).</li>
+</ul></div>
+
+<h2>3. Colour</h2>
+<div class="swatches">
+  <div class="sw" style="background:#FFFFFF"><b>White</b>#FFFFFF<span class="muted">60% of screen</span></div>
+  <div class="sw" style="background:#FFF0F3"><b>Blush</b>#FFF0F3<span class="muted">25% · sections, tiles</span></div>
+  <div class="sw" style="background:#061E45;color:#FFFFFF"><b>Navy</b>#061E45<span>10% · text, headings</span></div>
+  <div class="sw" style="background:#D01170;color:#FFFFFF"><b>Deep Rose</b>#D01170<span>4% · buttons, links</span></div>
+  <div class="sw" style="background:#F64B72;color:#FFFFFF"><b>Signal Pink</b>#F64B72<span>1% · logo, accents</span></div>
+</div>
+<table>
+<tr><th>Colour</th><th>Hex</th><th>RGB</th><th>Use</th><th>Contrast</th></tr>
+<tr><td><b>Navy</b></td><td>#061E45</td><td>6, 30, 69</td><td>All text and headings. Navy wordmark.</td><td>16.41:1 on white. 14.86:1 on blush.</td></tr>
+<tr><td><b>Deep Rose</b></td><td>#D01170</td><td>208, 17, 112</td><td>Primary button (one per screen), links, icons, focus ring.</td><td>5.26:1 on white (white button text passes). 4.76:1 on blush.</td></tr>
+<tr><td><b>Signal Pink</b></td><td>#F64B72</td><td>246, 75, 114</td><td>Logo, favicon, progress bar, large accents (24 px and up).</td><td>3.40:1 on white. <b>Fails for text.</b> 3.08:1 on blush.</td></tr>
+<tr><td><b>Bracket pink</b></td><td>#FCB8CA</td><td>252, 184, 202</td><td>The four brackets in the logo only.</td><td>1.63:1 on white. Decorative only.</td></tr>
+<tr><td><b>Error</b></td><td>#B42318</td><td>180, 35, 24</td><td>Errors only: outline, label and icon. Never for promotions or "new".</td><td>6.57:1 on white.</td></tr>
+</table>
+<div class="note"><b>Colour pattern.</b> Mostly white and blush. Navy carries the words. Deep Rose marks what you can click. Signal Pink is the signature, used sparingly. The WCAG AA rule: 4.5:1 for body text, 3:1 for large text and icons. Values are measured from the logo files and the hex codes above.</div>
+<h3>Colour rules</h3>
+<ul>
+  <li>One Deep Rose primary button per screen. Other actions use the ghost button (white, navy text, thin border).</li>
+  <li>Use Signal Pink for the logo and large accents. Never for body text or small icons on white.</li>
+  <li>Keep Navy and the Mergepdftool navy apart. The Short Link navy is close to it, so let pink, not navy, carry the identity.</li>
+</ul>
+
+<h2>4. Typography</h2>
+<p>Manrope for English. Noto Sans Thai for Thai. Manrope has no Thai letters, so Thai text always uses Noto Sans Thai.</p>
+<table>
+<tr><th>Role</th><th>English</th><th>Thai</th><th>Size</th></tr>
+<tr><td>Hero heading</td><td>Manrope 800, tight tracking</td><td>Noto Sans Thai 700, no tracking</td><td>40 px desktop, 30 px phone</td></tr>
+<tr><td>Section heading</td><td>Manrope 700</td><td>Noto Sans Thai 700</td><td>24 px</td></tr>
+<tr><td>Body</td><td>Manrope 400, line height 1.6</td><td>Noto Sans Thai 400, line height 1.7</td><td>16 px</td></tr>
+<tr><td>Eyebrow label</td><td>Manrope 700, uppercase, +6% tracking</td><td>Noto Sans Thai 600, no capitals, no tracking</td><td>13 px</td></tr>
+<tr><td>Button</td><td>Manrope 600</td><td>Noto Sans Thai 600</td><td>15 px</td></tr>
+</table>
+<p><b>Thai rules.</b> No letter-spacing. No uppercase styling (Thai has no capitals). Line height about 1.7. Keep short phrases on one line.</p>
+
+<h2>5. Components</h2>
+<div class="grid">
+  <div class="card"><span class="btn">Shorten</span><div class="label">Primary button. Deep Rose, white text, 10 px radius, 44 px high.</div></div>
+  <div class="card"><span class="btn ghost">Copy</span><div class="label">Ghost button. White, navy text, thin border.</div></div>
+  <div class="card"><div class="note" style="border:1px solid var(--error);background:#FFFFFF;color:var(--error);font-weight:600">Please enter a URL.</div><div class="label">Error. Red outline, red text, and a label. Never colour alone.</div></div>
+</div>
+<p class="muted">Cards are white with a thin line border and a 12 px radius. Icon tiles are blush with a navy or Deep Rose line icon.</p>
+
+<h2>6. Tone of voice</h2>
+<table>
+<tr><th>Principle</th><th>English</th><th>Thai</th></tr>
+<tr><td>1. Say what happened</td><td>"Short link created."</td><td class="th">สร้างลิงก์สั้นแล้ว</td></tr>
+<tr><td>2. Short sentences</td><td>"Copy it and share it."</td><td class="th">คัดลอกแล้วนำไปแชร์ได้เลย</td></tr>
+<tr><td>3. Promise only what it does</td><td>"Click data stays in your own storage."</td><td class="th">ข้อมูลการคลิกเก็บอยู่ในที่เก็บข้อมูลของคุณ</td></tr>
+<tr><td>4. Name the action on the button</td><td>"Shorten", not "Submit"</td><td class="th">"ย่อลิงก์" ไม่ใช่ "ส่งข้อมูล"</td></tr>
+<tr><td>5. No polite particles in product text</td><td>Keep product messages neutral.</td><td class="th">ไม่ใช้คำลงท้าย ครับ หรือ ค่ะ ในข้อความของระบบ</td></tr>
+</table>
+
+<h3>Microcopy: the same words the app uses</h3>
+<table>
+<tr><th>Moment</th><th>English</th><th>Thai</th></tr>
+<tr><td>Main button</td><td>Shorten</td><td class="th">ย่อลิงก์</td></tr>
+<tr><td>Result label</td><td>Your short link</td><td class="th">ลิงก์สั้นของคุณ</td></tr>
+<tr><td>Copy / copied</td><td>Copy / Copied</td><td class="th">คัดลอก / คัดลอกแล้ว</td></tr>
+<tr><td>Missing URL</td><td>Please enter a URL.</td><td class="th">กรุณาใส่ลิงก์</td></tr>
+<tr><td>Created</td><td>Short link created</td><td class="th">สร้างลิงก์สั้นแล้ว</td></tr>
+<tr><td>Empty list</td><td>No links yet. Shorten your first link above.</td><td class="th">ยังไม่มีลิงก์ เริ่มย่อลิงก์แรกด้านบนได้เลย</td></tr>
+<tr><td>Delete</td><td>Delete this link? The short URL will stop working.</td><td class="th">ลบลิงก์นี้หรือไม่ ลิงก์สั้นจะใช้งานไม่ได้อีก</td></tr>
+<tr><td>Login gate</td><td>Log in to manage links</td><td class="th">เข้าสู่ระบบเพื่อจัดการลิงก์</td></tr>
+<tr><td>Status: disabled</td><td>Disabled</td><td class="th">ปิดใช้งาน</td></tr>
+<tr><td>Status: expired</td><td>Expired</td><td class="th">หมดอายุ</td></tr>
+<tr><td>Saved</td><td>Saved</td><td class="th">บันทึกแล้ว</td></tr>
+</table>
+
+<h3>Never write</h3>
+<table>
+<tr><th>English</th><th>Thai</th><th>Why</th></tr>
+<tr><td>"Best"</td><td class="th">ที่สุด</td><td>Cannot be proved.</td></tr>
+<tr><td>"#1"</td><td class="th">อันดับ 1</td><td>Cannot be proved.</td></tr>
+<tr><td>"Guaranteed"</td><td class="th">การันตี</td><td>No promise like this.</td></tr>
+<tr><td>"100% free" or "unlimited"</td><td class="th">ฟรี 100% หรือ ไม่จำกัด</td><td>Only if the plan really says so.</td></tr>
+<tr><td>"Limited time", "hurry"</td><td class="th">รีบเลย</td><td>Fake urgency.</td></tr>
+<tr><td>"Secure" without saying how</td><td class="th">ปลอดภัย โดยไม่บอกว่าอย่างไร</td><td>Say what is true: "Click data stays in your own storage."</td></tr>
+</table>
+
+<h2>7. Decisions and open items</h2>
+<ul>
+  <li><b>Credit line.</b> Footer says "A RankPath Labs tool", as plain text. The alternative is "by Mergepdftool". Pick one before printing.</li>
+  <li><b>Vector logo files.</b> The logo pack is PNG only. Print and very large sizes need SVG or AI files. Please send them, or confirm the PNG pack is final.</li>
+  <li><b>Name check.</b> "Short Link" is a generic phrase. Check it can be registered in the markets you sell in before printing it on materials.</li>
+  <li><b>Status pages.</b> The not-found, disabled and expired pages are English only. The Thai copy in section 6 is ready for them.</li>
+</ul>
+
+<p class="foot">Contrast is measured with the WCAG 2.1 formula from the hex values. Colour shares follow the Mergepdftool pattern. Logo colours are sampled from the pack's own pixels, so values can differ by one or two points between files. Audience and business notes are not in this guide.</p>
+</div>
+</body>
+</html>
