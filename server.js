@@ -56,12 +56,18 @@ const server = createServer(async (req, res) => {
       return res.end(await staticFile('index.html'));
     }
     if (url.pathname === '/qr.js') { res.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8', 'Cache-Control': 'public, max-age=3600', 'X-Content-Type-Options': 'nosniff' }); return res.end(await staticFile('qr.js')); }
-    if (/^\/brand\/[a-z0-9-]+\.png$/.test(url.pathname)) {
+    const brandFile = url.pathname === '/favicon.svg' ? '/brand/shortlink-icon.svg' : url.pathname;
+    const brandMatch = /^\/brand\/[a-z0-9-]+\.(png|svg)$/.exec(brandFile);
+    if (brandMatch) {
       try {
-        const body = await readFile(join(publicDir, url.pathname));
-        res.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=86400', 'X-Content-Type-Options': 'nosniff' });
+        const body = await readFile(join(publicDir, brandFile));
+        const headers = { 'Content-Type': brandMatch[1] === 'svg' ? 'image/svg+xml' : 'image/png', 'Cache-Control': 'public, max-age=86400', 'X-Content-Type-Options': 'nosniff' };
+        if (brandMatch[1] === 'svg') headers['Content-Security-Policy'] = "default-src 'none'; style-src 'unsafe-inline'";
+        res.writeHead(200, headers);
         return res.end(body);
-      } catch { res.writeHead(404); return res.end(); }
+      } catch {
+        if (url.pathname !== '/favicon.svg') { res.writeHead(404); return res.end(); }
+      }
     }
     const request = await toRequest(req);
     const get = (name) => req.headers[name];
