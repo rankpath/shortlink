@@ -12,7 +12,7 @@ One Node.js file, no dependencies, no build step. UI follows the Short Link bran
 |---|---|
 | Branded short links | Your own domain(s), random 6-character slug or custom alias |
 | Click analytics | Clicks per day, unique visitors, device, browser, OS, referrer, country (and city when a CDN sends it), bots counted separately |
-| QR codes | Generated in the browser, PNG or SVG, 512–2048 px, navy / deep rose / black |
+| QR codes | Generated in the browser, PNG or SVG, 512–2048 px, deep purple / purple / black |
 | Link management | Search, tags, sort, edit destination (dynamic QR keeps working), disable, expiry date, delete, CSV export |
 | Bulk add | Paste up to 100 URLs, optional alias and title per line |
 | UTM builder | Add utm_source / medium / campaign / content before shortening |
@@ -135,6 +135,6 @@ Rate limits: 120 API requests per minute per IP, 10 login attempts per 15 minute
 
 ## Brand
 
-Colours and type follow the Short Link brand guide (`brand/short-link-brand-guide.html`). Signal Pink `#F64B72` is the logo colour, Deep Rose `#D01170` is for buttons and links, Blush `#FFF0F3` is for surfaces, Navy `#061E45` is for text, and red `#B42318` is for errors only. Fonts: Manrope (English) and Noto Sans Thai (Thai, no letter-spacing, line height 1.7).
+Colours and type follow the Short Link brand guide (`brand/short-link-brand-guide.html`). Deep Purple `#2D0B5B` is the logo colour, Pink `#FF4D8D` is for the main button and charts (with Navy Ink text, never white), Purple `#7C3AED` is for links and icons, Blush `#FFE8F0` is for surfaces, Navy Ink `#170528` is for text, and red `#B42318` is for errors only. Fonts: Manrope (English) and Noto Sans Thai (Thai, no letter-spacing, line height 1.7).
 
 The logo files are in `public/brand/`. To change the footer credit or its link, edit the `BRAND` object at the top of the script in `public/index.html`.

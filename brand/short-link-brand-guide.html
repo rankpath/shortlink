@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Short Link · Brand Guide v1</title>
+<title>Short Link · Brand Guide v2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root { --white:#FFFFFF; --blush:#FFF0F3; --navy:#061E45; --rose:#D01170; --signal:#F64B72; --bracket:#FCB8CA; --error:#B42318; --muted:#5B6B8C; --line:#EBDDE4; }
+:root { --white:#FFFFFF; --blush:#FFE8F0; --lavender:#E9D5FF; --navy:#170528; --primary:#2D0B5B; --purple:#7C3AED; --pink:#FF4D8D; --pink-soft:#FFC2D1; --error:#B42318; --muted:#5B6173; --line:#E4DDF0; }
 * { box-sizing: border-box; }
 body { margin:0; font-family: Manrope, "Noto Sans Thai", system-ui, sans-serif; color: var(--navy); background: var(--white); line-height: 1.6; }
 .wrap { max-width: 1040px; margin: 0 auto; padding: 40px 20px 72px; }
@@ -16,6 +16,7 @@ h1 { font-size: 40px; line-height: 1.1; margin: 0 0 8px; letter-spacing: -0.02em
 h2 { font-size: 24px; margin: 56px 0 14px; padding-top: 28px; border-top: 1px solid var(--line); }
 h3 { font-size: 17px; margin: 24px 0 8px; }
 p { margin: 0 0 12px; }
+a { color: var(--purple); }
 .th { font-family: "Noto Sans Thai", Manrope, sans-serif; line-height: 1.7; letter-spacing: 0; }
 .muted { color: var(--muted); }
 table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 8px 0 18px; }
@@ -24,12 +25,12 @@ th { color: var(--muted); font-weight: 700; font-size: 12px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
 .stage { border: 1px solid var(--line); border-radius: 12px; padding: 28px; display: flex; align-items: center; justify-content: center; min-height: 150px; }
 .stage.blush { background: var(--blush); border-color: var(--blush); }
-.stage.navy-bg { background: var(--navy); }
+.stage.dark { background: var(--primary); border-color: var(--primary); }
 .label { font-size: 13px; color: var(--muted); margin-top: 8px; }
 .swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 12px 0 18px; }
 .sw { border-radius: 12px; border: 1px solid var(--line); min-height: 116px; padding: 12px; display: flex; flex-direction: column; justify-content: flex-end; font-size: 13px; }
 .sw b { font-size: 15px; }
-.btn { display: inline-block; background: var(--rose); color: #FFFFFF; font-weight: 600; font-size: 15px; padding: 12px 20px; border-radius: 10px; }
+.btn { display: inline-block; background: var(--pink); color: var(--navy); font-weight: 600; font-size: 15px; padding: 12px 20px; border-radius: 10px; }
 .btn.ghost { background: #FFFFFF; color: var(--navy); border: 1px solid var(--line); }
 .dont { border: 1px solid var(--error); border-radius: 12px; padding: 14px 18px; }
 .dont ul { margin-bottom: 0; }
@@ -41,15 +42,16 @@ ul { margin: 0 0 12px 20px; padding: 0; } li { margin: 4px 0; }
 <body>
 <div class="wrap">
 
-<img src="../public/brand/shortlink-wordmark-navy.png" alt="Short Link" height="40" style="display:block;margin-bottom:24px">
+<img src="../public/brand/shortlink-wordmark.png" alt="Short Link" height="40" style="display:block;margin-bottom:24px">
 <h1>Short Link brand guide</h1>
-<p class="muted">Version 1, October 2026. Identity (logo and colour), typography and tone of voice. Built by Mergepdftool. Thai and English are equal.</p>
+<p class="muted">Version 2, October 2026. Identity (logo and colour), typography and tone of voice. Built by Mergepdftool. Thai and English are equal.</p>
 
 <h2>1. Brand idea</h2>
 <table>
-<tr><th>Language</th><th>Tagline</th></tr>
-<tr><td>English</td><td><b>Short links. Your data stays here.</b></td></tr>
-<tr><td><span class="th">Thai</span></td><td><b class="th">ลิงก์สั้น ข้อมูลอยู่กับคุณ</b></td></tr>
+<tr><th>Where</th><th>Language</th><th>Tagline</th></tr>
+<tr><td>Logo lockup</td><td>English</td><td><b>Short links. Smart QR.</b></td></tr>
+<tr><td>Product message</td><td>English</td><td><b>Short links. Your data stays here.</b></td></tr>
+<tr><td>Product message</td><td><span class="th">Thai</span></td><td><b class="th">ลิงก์สั้น ข้อมูลอยู่กับคุณ</b></td></tr>
 </table>
 <p><b>Positioning.</b> Short Link gives you short links on your own domain, with clear click numbers. Your click data stays in your own storage.</p>
 <p class="th"><b>ตำแหน่งของแบรนด์</b> Short Link ช่วยให้คุณสร้างลิงก์สั้นบนโดเมนของคุณเอง พร้อมตัวเลขคลิกที่อ่านง่าย ข้อมูลการคลิกเก็บอยู่ในที่เก็บข้อมูลของคุณเอง</p>
@@ -62,54 +64,61 @@ ul { margin: 0 0 12px 20px; padding: 0; } li { margin: 4px 0; }
 </table>
 
 <h2>2. Logo</h2>
-<p>The logo is the wordmark with four brackets in the "o" position. The brackets are a scan frame: it is the one visual idea in the brand.</p>
+<p>The logo is the word "ShortLink" in heavy deep purple, with four pink brackets in the "o" position. The brackets are a scan frame: it is the one visual idea in the brand. The app icon is the same frame in pale pink on a pink square.</p>
 <div class="grid">
-  <div><div class="stage"><img src="../public/brand/shortlink-wordmark-pink.png" alt="Short Link pink logo" style="width:100%;max-width:240px;height:auto"></div><div class="label"><b>Primary.</b> Signal Pink on white. Use at 120 px wide or more.</div></div>
-  <div><div class="stage"><img src="../public/brand/shortlink-wordmark-navy.png" alt="Short Link navy logo" style="width:100%;max-width:200px;height:auto"></div><div class="label"><b>One colour, Navy.</b> Use below 120 px wide, in the app header, and on blush.</div></div>
-  <div><div class="stage blush"><img src="../public/brand/shortlink-wordmark-navy.png" alt="Short Link navy logo on blush" style="width:100%;max-width:200px;height:auto"></div><div class="label"><b>On blush.</b> Navy only. The pink logo never goes on blush.</div></div>
-  <div><div class="stage navy-bg"><img src="../public/brand/shortlink-symbol.png" alt="Short Link symbol on navy" style="width:120px;height:120px"></div><div class="label"><b>Symbol.</b> The four brackets, on Navy or Signal Pink only. For small icons on white, use the app icon.</div></div>
-  <div><div class="stage"><img src="../public/brand/apple-touch-icon-180.png" alt="Short Link app icon" style="width:96px;height:96px;border-radius:20px"></div><div class="label"><b>App icon and favicon.</b> Pink square with pale brackets.</div></div>
+  <div><div class="stage"><img src="../public/brand/shortlink-wordmark.png" alt="Short Link logo on white" style="width:100%;max-width:240px;height:auto"></div><div class="label"><b>Primary.</b> Full colour on white. Use at 120 px wide or more.</div></div>
+  <div><div class="stage blush"><img src="../public/brand/shortlink-wordmark.png" alt="Short Link logo on blush" style="width:100%;max-width:240px;height:auto"></div><div class="label"><b>On blush or lavender.</b> Full colour works on both.</div></div>
+  <div><div class="stage dark"><img src="../public/brand/shortlink-wordmark-white.png" alt="Short Link white logo on deep purple" style="width:100%;max-width:240px;height:auto"></div><div class="label"><b>On deep purple.</b> Use the white logo. The brackets stay pink.</div></div>
+  <div><div class="stage"><img src="../public/brand/favicon-512.png" alt="Short Link app icon" style="width:96px;height:96px"></div><div class="label"><b>App icon and favicon.</b> Pink square with pale brackets. Minimum 24 px.</div></div>
 </div>
 <h3>Rules</h3>
 <ul>
-  <li><b>Clear space.</b> Keep at least the height of the letter "h" free on every side.</li>
-  <li><b>Minimum size.</b> Pink wordmark 120 px wide. Navy wordmark 96 px wide. Symbol 24 px.</li>
+  <li><b>Clear space.</b> Keep at least the height of the letter "S" free on every side.</li>
+  <li><b>Minimum size.</b> Wordmark 120 px wide on screen. Icon 24 px.</li>
+  <li><b>App header.</b> The wordmark is 30 px tall (about 168 px wide).</li>
   <li><b>Write the name</b> as "Short Link" in running text, in the same font as the text around it.</li>
 </ul>
 <div class="dont"><b>Don't</b>
 <ul>
   <li>Recolour the brackets, or make only part of the wordmark a different colour.</li>
-  <li>Put the pink logo on Deep Rose, on blush, on photos, or on navy.</li>
+  <li>Put the full-colour logo on pink, on photos, or on deep purple (use the white logo there).</li>
   <li>Add shadows, outlines, glows or gradients. Stretch or skew the logo.</li>
-  <li>Use the bracket tint alone as an icon on white. It is too pale (see contrast below).</li>
+  <li>Use the pale bracket colour alone as an icon on white. It is too pale.</li>
 </ul></div>
 
 <h2>3. Colour</h2>
 <div class="swatches">
-  <div class="sw" style="background:#FFFFFF"><b>White</b>#FFFFFF<span class="muted">60% of screen</span></div>
-  <div class="sw" style="background:#FFF0F3"><b>Blush</b>#FFF0F3<span class="muted">25% · sections, tiles</span></div>
-  <div class="sw" style="background:#061E45;color:#FFFFFF"><b>Navy</b>#061E45<span>10% · text, headings</span></div>
-  <div class="sw" style="background:#D01170;color:#FFFFFF"><b>Deep Rose</b>#D01170<span>4% · buttons, links</span></div>
-  <div class="sw" style="background:#F64B72;color:#FFFFFF"><b>Signal Pink</b>#F64B72<span>1% · logo, accents</span></div>
+  <div class="sw" style="background:#FFFFFF"><b>White</b>#FFFFFF<span class="muted">Page, cards</span></div>
+  <div class="sw" style="background:#FFE8F0"><b>Blush</b>#FFE8F0<span class="muted">Sections, tiles</span></div>
+  <div class="sw" style="background:#E9D5FF"><b>Lavender</b>#E9D5FF<span class="muted">Section backgrounds, illustration</span></div>
+  <div class="sw" style="background:#2D0B5B;color:#FFFFFF"><b>Deep Purple</b>#2D0B5B<span>Logo, API band</span></div>
+  <div class="sw" style="background:#170528;color:#FFFFFF"><b>Navy Ink</b>#170528<span>Text, headings</span></div>
+  <div class="sw" style="background:#7C3AED;color:#FFFFFF"><b>Purple</b>#7C3AED<span>Links, icons, focus</span></div>
+  <div class="sw" style="background:#FF4D8D;color:#170528"><b>Pink</b>#FF4D8D<span>Buttons, bars, active</span></div>
+  <div class="sw" style="background:#FFC2D1"><b>Soft Pink</b>#FFC2D1<span>Highlight, text on purple</span></div>
 </div>
 <table>
-<tr><th>Colour</th><th>Hex</th><th>RGB</th><th>Use</th><th>Contrast</th></tr>
-<tr><td><b>Navy</b></td><td>#061E45</td><td>6, 30, 69</td><td>All text and headings. Navy wordmark.</td><td>16.41:1 on white. 14.86:1 on blush.</td></tr>
-<tr><td><b>Deep Rose</b></td><td>#D01170</td><td>208, 17, 112</td><td>Primary button (one per screen), links, icons, focus ring.</td><td>5.26:1 on white (white button text passes). 4.76:1 on blush.</td></tr>
-<tr><td><b>Signal Pink</b></td><td>#F64B72</td><td>246, 75, 114</td><td>Logo, favicon, progress bar, large accents (24 px and up).</td><td>3.40:1 on white. <b>Fails for text.</b> 3.08:1 on blush.</td></tr>
-<tr><td><b>Bracket pink</b></td><td>#FCB8CA</td><td>252, 184, 202</td><td>The four brackets in the logo only.</td><td>1.63:1 on white. Decorative only.</td></tr>
-<tr><td><b>Error</b></td><td>#B42318</td><td>180, 35, 24</td><td>Errors only: outline, label and icon. Never for promotions or "new".</td><td>6.57:1 on white.</td></tr>
+<tr><th>Colour</th><th>Hex</th><th>Use</th><th>Contrast</th></tr>
+<tr><td><b>Navy Ink</b></td><td>#170528</td><td>All text and headings.</td><td>19.29:1 on white. 16.58:1 on blush.</td></tr>
+<tr><td><b>Deep Purple</b></td><td>#2D0B5B</td><td>Logo, the dark API section, selected states.</td><td>16.02:1 on white. White text on it 16.02:1.</td></tr>
+<tr><td><b>Muted text</b></td><td>#5B6173</td><td>Secondary text and captions.</td><td>6.17:1 on white. 5.31:1 on blush.</td></tr>
+<tr><td><b>Purple</b></td><td>#7C3AED</td><td>Links, line icons, focus ring, QR option. Hover #6D28D9.</td><td>5.70:1 on white. 4.90:1 on blush. Hover 7.10:1 on white.</td></tr>
+<tr><td><b>Pink</b></td><td>#FF4D8D</td><td>Primary button (one per screen), chart bars, progress bar. Hover #FF6B9E.</td><td>Navy Ink text on pink 6.15:1. <b>White text on pink is only 3.14:1 and fails for body text.</b> Pink as text on white 3.14:1: do not use.</td></tr>
+<tr><td><b>Soft Pink</b></td><td>#FFC2D1</td><td>Highlight, and text on Deep Purple.</td><td>10.60:1 on Deep Purple. Decorative on white.</td></tr>
+<tr><td><b>App icon pink</b></td><td>#F74775</td><td>Favicon and app icon background only.</td><td>3.44:1 on white. Icon only.</td></tr>
+<tr><td><b>Error</b></td><td>#B42318</td><td>Errors only: outline, label and icon. Never for promotions or "new".</td><td>6.57:1 on white.</td></tr>
 </table>
-<div class="note"><b>Colour pattern.</b> Mostly white and blush. Navy carries the words. Deep Rose marks what you can click. Signal Pink is the signature, used sparingly. The WCAG AA rule: 4.5:1 for body text, 3:1 for large text and icons. Values are measured from the logo files and the hex codes above.</div>
+<div class="note"><b>Colour pattern.</b> Mostly white and blush. Navy Ink carries the words. Purple marks links and icons. Pink marks the one main action and the data. Deep Purple is for the logo and the dark API section. The WCAG AA rule: 4.5:1 for body text, 3:1 for large text and icons. Values are measured with the WCAG 2.1 formula from the hex codes above.</div>
 <h3>Colour rules</h3>
 <ul>
-  <li>One Deep Rose primary button per screen. Other actions use the ghost button (white, navy text, thin border).</li>
-  <li>Use Signal Pink for the logo and large accents. Never for body text or small icons on white.</li>
-  <li>Keep Navy and the Mergepdftool navy apart. The Short Link navy is close to it, so let pink, not navy, carry the identity.</li>
+  <li>One pink primary button per screen, with Navy Ink text. Other actions use the ghost button (white, navy text, thin border).</li>
+  <li>Never put white text on pink. Never use pink for body text or small text on white.</li>
+  <li>QR codes use Deep Purple, Purple or black. Pink is too light for reliable scanning.</li>
+  <li>Keep this purple palette apart from the Mergepdftool blue palette.</li>
 </ul>
 
 <h2>4. Typography</h2>
-<p>Manrope for English. Noto Sans Thai for Thai. Manrope has no Thai letters, so Thai text always uses Noto Sans Thai.</p>
+<p>Manrope for English. Noto Sans Thai for Thai. Manrope has no Thai letters, so Thai text always uses Noto Sans Thai. The new brand sheet does not name a font, so the app keeps these two.</p>
 <table>
 <tr><th>Role</th><th>English</th><th>Thai</th><th>Size</th></tr>
 <tr><td>Hero heading</td><td>Manrope 800, tight tracking</td><td>Noto Sans Thai 700, no tracking</td><td>40 px desktop, 30 px phone</td></tr>
@@ -122,11 +131,11 @@ ul { margin: 0 0 12px 20px; padding: 0; } li { margin: 4px 0; }
 
 <h2>5. Components</h2>
 <div class="grid">
-  <div class="card"><span class="btn">Shorten</span><div class="label">Primary button. Deep Rose, white text, 10 px radius, 44 px high.</div></div>
+  <div class="card"><span class="btn">Shorten</span><div class="label">Primary button. Pink, Navy Ink text, 10 px radius, 44 px high.</div></div>
   <div class="card"><span class="btn ghost">Copy</span><div class="label">Ghost button. White, navy text, thin border.</div></div>
   <div class="card"><div class="note" style="border:1px solid var(--error);background:#FFFFFF;color:var(--error);font-weight:600">Please enter a URL.</div><div class="label">Error. Red outline, red text, and a label. Never colour alone.</div></div>
 </div>
-<p class="muted">Cards are white with a thin line border and a 12 px radius. Icon tiles are blush with a navy or Deep Rose line icon.</p>
+<p class="muted">Cards are white with a thin line border and a 12 px radius. Icon tiles are blush with a purple line icon.</p>
 
 <h2>6. Tone of voice</h2>
 <table>
@@ -168,12 +177,14 @@ ul { margin: 0 0 12px 20px; padding: 0; } li { margin: 4px 0; }
 <h2>7. Decisions and open items</h2>
 <ul>
   <li><b>Credit line.</b> Decided: "by Mergepdftool", as plain text, with no link yet. Add a URL later if you want one.</li>
-  <li><b>Vector logo files.</b> The logo pack is PNG only. Print and very large sizes need SVG or AI files. Please send them, or confirm the PNG pack is final.</li>
+  <li><b>Vector logo files.</b> The logo and icon files are cut from the PNG brand sheets (wordmark 626 px wide, icon 512 px). Print and very large sizes need SVG or AI files.</li>
+  <li><b>Hex codes on the palette sheet.</b> The sheet prints Primary as #FB6F92 (pink), but its swatch and the logo are deep purple, so this guide uses the swatch colour #2D0B5B. The sheet prints Purple as #7C3AED while the swatch measures #8543F4. This guide uses the printed #7C3AED, which passes 5.70:1. Please confirm both.</li>
+  <li><b>Tagline.</b> "Short links. Smart QR." comes from the brand sheet. It is not in the app yet, and it has no Thai version.</li>
   <li><b>Name check.</b> "Short Link" is a generic phrase. Check it can be registered in the markets you sell in before printing it on materials.</li>
   <li><b>Status pages.</b> The not-found, disabled and expired pages are English only. Thai copy for them still needs writing; section 6 only covers the list labels.</li>
 </ul>
 
-<p class="foot">Contrast is measured with the WCAG 2.1 formula from the hex values. Colour shares follow the Mergepdftool pattern. Logo colours are sampled from the pack's own pixels, so values can differ by one or two points between files. Audience and business notes are not in this guide.</p>
+<p class="foot">Contrast is measured with the WCAG 2.1 formula from the hex values. Logo colours are sampled from the brand sheet's own pixels, so values can differ by one or two points between files. Audience and business notes are not in this guide.</p>
 </div>
 </body>
 </html>
