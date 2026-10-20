@@ -50,6 +50,11 @@ test('health and home page are public', async () => {
   assert.match(home.headers.get('content-security-policy') || '', /default-src 'self'/);
   const brandPng = await fetch(base + '/brand/favicon-32.png');
   assert.equal(brandPng.status, 200); assert.equal(brandPng.headers.get('content-type'), 'image/png');
+  const brandSvg = await fetch(base + '/brand/shortlink-wordmark.svg');
+  assert.equal(brandSvg.status, 200); assert.equal(brandSvg.headers.get('content-type'), 'image/svg+xml');
+  assert.match(await brandSvg.text(), /#2D0B5B/);
+  const favicon = await fetch(base + '/favicon.svg');
+  assert.equal(favicon.status, 200); assert.match(await favicon.text(), /#FF4D8D/);
   const qr = await call('/qr.js');
   assert.equal(qr.status, 200); assert.match(qr.data, /QRGen/);
 });

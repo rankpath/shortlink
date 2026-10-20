@@ -137,4 +137,4 @@ Rate limits: 120 API requests per minute per IP, 10 login attempts per 15 minute
 
 Colours and type follow the Short Link brand guide (`brand/short-link-brand-guide.html`). Deep Purple `#2D0B5B` is the logo colour, Pink `#FF4D8D` is for the main button and charts (with Navy Ink text, never white), Purple `#7C3AED` is for links and icons, Blush `#FFE8F0` is for surfaces, Navy Ink `#170528` is for text, and red `#B42318` is for errors only. Fonts: Manrope (English) and Noto Sans Thai (Thai, no letter-spacing, line height 1.7).
 
-The logo files are in `public/brand/`. To change the footer credit or its link, edit the `BRAND` object at the top of the script in `public/index.html`.
+The logo files are in `public/brand/` (SVG and PNG, traced from the brand sheets; ask the designer for the original vector file for print). To change the footer credit or its link, edit the `BRAND` object at the top of the script in `public/index.html`.
