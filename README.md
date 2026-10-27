@@ -86,7 +86,7 @@ Put Nginx, Caddy or Cloudflare in front for TLS and point the short domain at it
 
 ### HostAtom or any host with Plesk (Node.js extension)
 
-1. Add the short domain or a subdomain (for example `s.yourdomain.com`) in **Websites & Domains** and point its DNS `A` record at the server.
+1. Add the domain `shortlink.rank-path.com` (or your own short domain) in **Websites & Domains** and point its DNS `A` record at the server.
 2. In **File Manager**, create a folder `shortlink` next to `httpdocs`. Upload the zip there and extract it, so `server.js`, `app.cjs`, `package.json`, `lib/` and `public/` sit directly in `shortlink/`. Also create an empty folder `shortlink/docroot`.
 3. Open the domain, then **Node.js**, and set:
    - Node.js version: 22 or newer. If the list stops below 22, ask the host to add it, or use a VPS with Docker.
@@ -94,10 +94,10 @@ Put Nginx, Caddy or Cloudflare in front for TLS and point the short domain at it
    - Application root: `shortlink`.
    - Document root: `shortlink/docroot` (an empty folder, so every request goes to the app and keeps its security headers).
    - Application startup file: `app.cjs`. Plesk loads the startup file with `require()`, and the app is an ES module, so `app.cjs` loads it for you.
-4. **Custom environment variables:** `ADMIN_PASSWORD`, `API_KEY`, `SESSION_SECRET`, `SHORT_DOMAINS=https://s.yourdomain.com`, `TRUST_PROXY=true`, `TZ=Asia/Bangkok`. Do not set `PORT`; Plesk decides it. Data goes to `shortlink/data`. Keep that folder when you update the files.
+4. **Custom environment variables:** `ADMIN_PASSWORD`, `API_KEY`, `SESSION_SECRET`, `SHORT_DOMAINS=https://shortlink.rank-path.com`, `TRUST_PROXY=true`, `TZ=Asia/Bangkok`. Do not set `PORT`; Plesk decides it. Data goes to `shortlink/data`. Keep that folder when you update the files.
 5. The app uses no npm packages, so **NPM install** is not needed. Click **Enable Node.js**, then restart the app.
 6. Turn on HTTPS: **SSL/TLS Certificates** (Let's Encrypt), then in **Hosting Settings** turn on the permanent redirect from HTTP to HTTPS.
-7. Open `https://s.yourdomain.com/health`. It should show `{"ok":true,"service":"short-link"}`. If it does not start, read `passenger.log` in the domain's logs.
+7. Open `https://shortlink.rank-path.com/health`. It should show `{"ok":true,"service":"short-link"}`. If it does not start, read `passenger.log` in the domain's logs.
 
 ### Render
 
@@ -140,7 +140,7 @@ All `/api/*` routes accept either the dashboard cookie or `Authorization: Bearer
 Example:
 
 ```bash
-curl -X POST https://s.example.com/api/links \
+curl -X POST https://shortlink.rank-path.com/api/links \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"url":"https://example.com/landing?utm_source=line","slug":"line-oct","tags":["line"]}'
